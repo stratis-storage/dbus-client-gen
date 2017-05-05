@@ -10,7 +10,7 @@ the data structure returned by the GetManagedObjects() method.
 from ._errors import DbusClientRuntimeError
 
 
-def gmo_query_builder(spec):
+def mo_query_builder(spec):
     """
     Returns a function that builds a query method for an interface.
     This method encapsulates the locating of various managed objects

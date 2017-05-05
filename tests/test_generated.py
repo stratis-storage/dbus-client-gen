@@ -8,8 +8,8 @@ import unittest
 
 import xml.etree.ElementTree as ET
 
-from dbus_client_gen import gmo_query_builder
-from dbus_client_gen import gmo_reader_builder
+from dbus_client_gen import mo_query_builder
+from dbus_client_gen import managed_object_builder
 
 from dbus_client_gen._errors import DbusClientRuntimeError
 
@@ -42,7 +42,7 @@ class TestCase(unittest.TestCase):
         Verify that empty table for an object always raises an exception.
         """
         for name, spec in self._data.items():
-            builder = gmo_reader_builder(spec)
+            builder = managed_object_builder(spec)
             klass = types.new_class(name, bases=(object,), exec_body=builder)
             for prop in spec.findall("./property"):
                 name = prop.attrib['name']
@@ -59,7 +59,7 @@ class TestCase(unittest.TestCase):
         Test that gmo query builder returns a thing for an interface.
         """
         for spec in self._data.values():
-            query = gmo_query_builder(spec)
+            query = mo_query_builder(spec)
 
             with self.assertRaises(DbusClientRuntimeError):
                 list(query(dict(), {"bogus": None}))

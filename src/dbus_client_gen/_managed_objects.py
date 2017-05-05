@@ -11,7 +11,7 @@ from ._errors import DbusClientGenerationError
 from ._errors import DbusClientRuntimeError
 
 
-def gmo_reader_builder(spec):
+def managed_object_builder(spec):
     """
     Returns a function that builds a method interface based on 'spec'.
     This method interface is a simple one to return the values of
