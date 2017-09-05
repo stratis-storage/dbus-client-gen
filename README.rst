@@ -12,8 +12,8 @@ interface.
 Methods
 -------
 
-managed_object_builder
-^^^^^^^^^^^^^^^^^^^^^^
+managed_object_class
+^^^^^^^^^^^^^^^^^^^^
   This function consumes the spec for a single interface and returns a class
   which constructs objects which wrap the table for a particular object in the
   format returned by the GetManagedObjects() method of the ObjectManager

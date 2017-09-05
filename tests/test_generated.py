@@ -3,13 +3,12 @@ Test generation of class for invoking dbus methods.
 """
 
 import os
-import types
 import unittest
 
 import xml.etree.ElementTree as ET
 
 from dbus_client_gen import mo_query_builder
-from dbus_client_gen import managed_object_builder
+from dbus_client_gen import managed_object_class
 
 from dbus_client_gen._errors import DbusClientRuntimeError
 
@@ -42,8 +41,7 @@ class TestCase(unittest.TestCase):
         Verify that empty table for an object always raises an exception.
         """
         for name, spec in self._data.items():
-            builder = managed_object_builder(spec)
-            klass = types.new_class(name, bases=(object,), exec_body=builder)
+            klass = managed_object_class(name, spec)
             for prop in spec.findall("./property"):
                 name = prop.attrib['name']
                 self.assertTrue(hasattr(klass, name))
