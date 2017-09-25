@@ -12,15 +12,15 @@ interface.
 Methods
 -------
 
-gmo_reader_builder
-^^^^^^^^^^^^^^^^^^
+managed_object_class
+^^^^^^^^^^^^^^^^^^^^
   This function consumes the spec for a single interface and returns a class
   which constructs objects which wrap the table for a particular object in the
   format returned by the GetManagedObjects() method of the ObjectManager
   interface. Each object has an instance method for each property of the
   interface.
 
-gmo_query_builder
+mo_query_builder
 ^^^^^^^^^^^^^^^^^
   This function consumes the spec for a single interface and returns a function
   which implements a query on the whole object returned by a GetManagedObjects()

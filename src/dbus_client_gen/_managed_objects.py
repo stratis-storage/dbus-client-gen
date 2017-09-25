@@ -7,6 +7,8 @@ Code for generating classes suitable for wrapping a table for an object
 returned by GetManagedObjects().
 """
 
+import types
+
 from ._errors import DbusClientGenerationError
 from ._errors import DbusClientRuntimeError
 
@@ -100,3 +102,29 @@ def managed_object_builder(spec):
         namespace['__init__'] = __init__
 
     return builder
+
+
+def managed_object_class(name, spec):
+    """
+    Returns a class with an __init__ function which takes one
+    argument, a table which is a portion of the tree returned by
+    ObjectManager.GetManagedObjects(). The constructed object contains
+    a set of methods for directly accessing the properties which are stored
+    in the table.
+
+    Usage example:
+
+    * spec is an XML specification for an interface in the format returned
+    by the Introspect() method.
+    * table is the dict associated with a particular object returned by the
+    GetManagedObjects() method.
+
+    >>> Filesystem = managed_object_class("Filesystem", spec)
+    >>> fs = Filesystem(table)
+    >>> fs.Pool()
+
+    :param str name: the name to give the auto-generated class
+    :param spec: the interface specification
+    :rtype: type
+    """
+    return types.new_class(name, bases=(object,), exec_body=managed_object_builder(spec))
