@@ -33,8 +33,7 @@ class TestCase(unittest.TestCase):
             with open(path) as opath:
                 self._data[name] = ET.fromstring("".join(opath.readlines()))
 
-
-    def testGMOReader(self):
+    def test_gmo_reader(self):
         """
         Test that GMO reader from interface spec has the correct methods.
 
@@ -52,7 +51,7 @@ class TestCase(unittest.TestCase):
             with self.assertRaises(DbusClientRuntimeError):
                 klass(dict())
 
-    def testGMOQuery(self):
+    def test_gmo_query(self):
         """
         Test that gmo query builder returns a thing for an interface.
         """
@@ -65,21 +64,29 @@ class TestCase(unittest.TestCase):
             properties = [p.attrib['name'] for p in spec.findall("./property")]
             name = spec.attrib['name']
             table = {
-               'junk': {name: dict((k, None) for k in properties)},
-               'other': {"interface": dict()},
-               'nomatch': {name: dict((k, 2) for k in properties)},
+                'junk': {
+                    name: dict((k, None) for k in properties)
+                },
+                'other': {
+                    "interface": dict()
+                },
+                'nomatch': {
+                    name: dict((k, 2) for k in properties)
+                },
             }
 
             if properties:
                 self.assertEqual(
-                   len(list(query(table, dict((k, None) for k in properties)))),
-                   1
-                )
+                    len(
+                        list(
+                            query(table, dict(
+                                (k, None) for k in properties)))), 1)
                 with self.assertRaises(DbusClientRuntimeError):
                     table = {"junk": {name: dict()}}
                     list(query(table, dict((k, None) for k in properties)))
             else:
                 self.assertEqual(
-                   len(list(query(table, dict((k, None) for k in properties)))),
-                   2
-                )
+                    len(
+                        list(
+                            query(table, dict(
+                                (k, None) for k in properties)))), 2)

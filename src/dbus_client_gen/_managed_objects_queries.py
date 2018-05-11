@@ -1,7 +1,6 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
 """
 Code for generating methods suitable for identifying objects in
 the data structure returned by the GetManagedObjects() method.
@@ -23,15 +22,16 @@ def mo_query_builder(spec):
     try:
         interface_name = spec.attrib['name']
     # Should not fail if introspection data is properly formed
-    except KeyError as err: # pragma: no cover
+    except KeyError as err:  # pragma: no cover
         raise DbusClientRuntimeError("No name for interface.") from err
 
     try:
         property_names = \
            frozenset(p.attrib['name'] for p in spec.findall("./property"))
     # Should not fail if introspection data is properly formed
-    except KeyError as err: # pragma: no cover
-        raise DbusClientRuntimeError("No name for interface property.") from err
+    except KeyError as err:  # pragma: no cover
+        raise DbusClientRuntimeError(
+            "No name for interface property.") from err
 
     def the_func(gmo, props=None):
         """
@@ -56,20 +56,18 @@ def mo_query_builder(spec):
 
         if not frozenset(props.keys()) <= property_names:
             raise DbusClientRuntimeError(
-               "Unknown property for interface %s" % interface_name
-            )
+                "Unknown property for interface %s" % interface_name)
 
-        for (op, data) in gmo.items():
+        for (object_path, data) in gmo.items():
             if not interface_name in data.keys():
                 continue
 
             try:
                 if all(data[interface_name][key] == value \
                         for (key, value) in props.items()):
-                    yield (op, data)
+                    yield (object_path, data)
             except KeyError as err:
                 raise DbusClientRuntimeError(
-                   "Bad data for interface %s" % interface_name
-                ) from err
+                    "Bad data for interface %s" % interface_name) from err
 
     return the_func
