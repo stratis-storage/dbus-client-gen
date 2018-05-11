@@ -78,14 +78,16 @@ class TestCase(unittest.TestCase):
             },
         }
 
-        if properties:
-            self.assertEqual(
-                len(list(query(table, dict((k, None) for k in properties)))),
-                1)
+        result = list(query(table, dict((k, None) for k in properties)))
+        if properties != []:
+            self.assertEqual(len(result), 1)
+            self.assertEqual(result[0][0], "junk")
+
             with self.assertRaises(DbusClientMissingSearchPropertiesError):
                 table = {"junk": {name: dict()}}
                 list(query(table, dict((k, None) for k in properties)))
         else:
+            self.assertEqual(len(result), 2)
             self.assertEqual(
-                len(list(query(table, dict((k, None) for k in properties)))),
-                2)
+                frozenset(x[0] for x in result), frozenset(["junk",
+                                                            "nomatch"]))
