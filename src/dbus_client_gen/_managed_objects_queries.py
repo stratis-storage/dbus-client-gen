@@ -58,14 +58,14 @@ def mo_query_builder(spec):
             raise DbusClientRuntimeError(
                 "Unknown property for interface %s" % interface_name)
 
-        for (op, data) in gmo.items():
+        for (object_path, data) in gmo.items():
             if not interface_name in data.keys():
                 continue
 
             try:
                 if all(data[interface_name][key] == value \
                         for (key, value) in props.items()):
-                    yield (op, data)
+                    yield (object_path, data)
             except KeyError as err:
                 raise DbusClientRuntimeError(
                     "Bad data for interface %s" % interface_name) from err

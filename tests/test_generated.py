@@ -33,7 +33,7 @@ class TestCase(unittest.TestCase):
             with open(path) as opath:
                 self._data[name] = ET.fromstring("".join(opath.readlines()))
 
-    def testGMOReader(self):
+    def test_gmo_reader(self):
         """
         Test that GMO reader from interface spec has the correct methods.
 
@@ -51,7 +51,7 @@ class TestCase(unittest.TestCase):
             with self.assertRaises(DbusClientRuntimeError):
                 klass(dict())
 
-    def testGMOQuery(self):
+    def test_gmo_query(self):
         """
         Test that gmo query builder returns a thing for an interface.
         """
