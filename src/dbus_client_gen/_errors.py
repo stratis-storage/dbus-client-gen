@@ -34,3 +34,68 @@ class DbusClientRuntimeError(DbusClientError):
         """
         super(DbusClientRuntimeError, self).__init__(message)
         self.interface_name = interface_name
+
+
+class DbusClientMissingSearchPropertiesError(DbusClientRuntimeError):
+    """
+    Exception returned when searching GMO result finds expected properties
+    missing.
+    """
+
+    # pylint: disable=too-many-arguments
+    def __init__(self, message, interface_name, object_path, query_keys,
+                 data_keys):
+        """
+        Initialize exception.
+
+        :param str message: the error message
+        :param str interface_name: the interface name
+        :param str object_path: the object path of object with the data
+        :param query_keys: names of properties used in query
+        :type query_keys: list of str
+        :param data_keys: the keys actually available in the data
+        :type data_keys: list of str
+        """
+        super(DbusClientMissingSearchPropertiesError, self).__init__(
+            message, interface_name)
+        self.object_path = object_path
+        self.query_keys = query_keys
+        self.data_keys = data_keys
+
+
+class DbusClientMissingPropertyError(
+        DbusClientRuntimeError):  # pragma: no cover
+    """
+    Exception returned when GMO data does not contain the property name.
+    """
+
+    def __init__(self, message, interface_name, property_name):
+        """
+        Initialize exception.
+
+        :param str message: the error message
+        :param str interface_name: the interface name
+        :param str property_name: the name of the property to look up
+        """
+        super(DbusClientMissingPropertyError, self).__init__(
+            message, interface_name)
+        self.property_name = property_name
+
+
+class DbusClientMissingInterfaceError(DbusClientRuntimeError):
+    """
+    Exception returned when GMO data does not contain the interface name.
+    """
+
+    def __init__(self, message, interface_name):
+        """
+        Initialize exception.
+
+        :param str message: the error message
+        :param str interface_name: the interface name
+        """
+        # Note that if this is not disabled, pylint complains about
+        # super-init-not-called instead.
+        # pylint: disable=useless-super-delegation
+        super(DbusClientMissingInterfaceError, self).__init__(
+            message, interface_name)

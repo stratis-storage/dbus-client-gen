@@ -9,7 +9,8 @@ returned by GetManagedObjects().
 import types
 
 from ._errors import DbusClientGenerationError
-from ._errors import DbusClientRuntimeError
+from ._errors import DbusClientMissingInterfaceError
+from ._errors import DbusClientMissingPropertyError
 
 
 def managed_object_builder(spec):
@@ -54,14 +55,17 @@ def managed_object_builder(spec):
         def dbus_func(self):
             """
             The property getter.
+
+            :raises: DbusClientMissingPropertyError
             """
             try:
                 # pylint: disable=protected-access
                 return self._table[name]
             except KeyError as err:
-                raise DbusClientRuntimeError(
-                    "No entry found for interface %s and property %s" %
-                    (interface_name, name), interface_name) from err
+                fmt_str = "No entry found for interface \"%s\" and property \"%s\""
+                raise DbusClientMissingPropertyError(
+                    fmt_str % (interface_name,
+                               name), interface_name, name) from err
 
         return dbus_func
 
@@ -86,11 +90,13 @@ def managed_object_builder(spec):
         def __init__(self, table):
             """
             The initalizer for this class.
+
+            :raises: DbusClientMissingInterfaceError
             """
             if interface_name not in table:
-                raise DbusClientRuntimeError(
-                    "Object does not implement interface %s" % interface_name,
-                    interface_name)
+                fmt_str = "No data in table for interface \"%s\" found"
+                raise DbusClientMissingInterfaceError(fmt_str % interface_name,
+                                                      interface_name)
             # pylint: disable=protected-access
             self._table = table[interface_name]
 

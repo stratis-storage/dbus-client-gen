@@ -7,7 +7,7 @@ the data structure returned by the GetManagedObjects() method.
 """
 
 from ._errors import DbusClientGenerationError
-from ._errors import DbusClientRuntimeError
+from ._errors import DbusClientMissingSearchPropertiesError
 
 
 def mo_query_builder(spec):
@@ -43,7 +43,7 @@ def mo_query_builder(spec):
         If props is None or an empty dict all objects that implement
         the designated interface are returned.
 
-        :raises DbusClientRuntimeError:
+        :raises DbusClientMissingSearchPropertiesError:
         """
         props = dict() if props is None else props
 
@@ -57,8 +57,14 @@ def mo_query_builder(spec):
                        for (key, value) in props.items()):
                     yield (object_path, data)
             except KeyError as err:
-                raise DbusClientRuntimeError(
-                    "Bad data for interface %s" % interface_name,
-                    interface_name) from err
+                fmt_str = ("Missing properties in data for object \"%s\" for "
+                           "interface \"%s\": %s")
+                missing = ", ".join(
+                    str(x) for x in
+                    frozenset(props.keys()) - frozenset(sub_table.keys()))
+                raise DbusClientMissingSearchPropertiesError(
+                    fmt_str % (object_path, interface_name, missing),
+                    interface_name, object_path, [x for x in props.keys()],
+                    [x for x in sub_table.keys()]) from err
 
     return the_func
