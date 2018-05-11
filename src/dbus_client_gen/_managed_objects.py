@@ -1,7 +1,6 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
 """
 Code for generating classes suitable for wrapping a table for an object
 returned by GetManagedObjects().
@@ -39,8 +38,9 @@ def managed_object_builder(spec):
     try:
         interface_name = spec.attrib['name']
     # Should not fail if the data from Introspect() is well-formed.
-    except KeyError as err: # pragma: no cover
-        raise DbusClientGenerationError("No name found for interface.") from err
+    except KeyError as err:  # pragma: no cover
+        raise DbusClientGenerationError(
+            "No name found for interface.") from err
 
     def builder(namespace):
         """
@@ -69,11 +69,10 @@ def managed_object_builder(spec):
                 # initializer ensures that interface name is in table and
                 # name must be in table for interface because it was derived
                 # from the introspection information, so this should never fail.
-                except KeyError as err: # pragma: no cover
+                except KeyError as err:  # pragma: no cover
                     raise DbusClientRuntimeError(
-                       "No entry found for interface %s and property %s" %
-                       (interface_name, name)
-                    ) from err
+                        "No entry found for interface %s and property %s" %
+                        (interface_name, name)) from err
 
             return dbus_func
 
@@ -81,11 +80,10 @@ def managed_object_builder(spec):
             try:
                 name = prop.attrib['name']
             # Should not fail if introspection data is well formed.
-            except KeyError as err: # pragma: no cover
+            except KeyError as err:  # pragma: no cover
                 raise DbusClientGenerationError(
-                   "No entry found for interface %s and property %s" %
-                   (interface_name, name)
-                ) from err
+                    "No entry found for interface %s and property %s" %
+                    (interface_name, name)) from err
 
             namespace[name] = build_property(name)
 
@@ -95,9 +93,8 @@ def managed_object_builder(spec):
             """
             if interface_name not in table:
                 raise DbusClientRuntimeError(
-                   "Object does not implement interface %s" % interface_name
-                )
-            self._table = table # pylint: disable=protected-access
+                    "Object does not implement interface %s" % interface_name)
+            self._table = table  # pylint: disable=protected-access
 
         namespace['__init__'] = __init__
 
@@ -127,4 +124,5 @@ def managed_object_class(name, spec):
     :param spec: the interface specification
     :rtype: type
     """
-    return types.new_class(name, bases=(object,), exec_body=managed_object_builder(spec))
+    return types.new_class(
+        name, bases=(object, ), exec_body=managed_object_builder(spec))
