@@ -57,10 +57,7 @@ def managed_object_builder(spec):
             """
             try:
                 # pylint: disable=protected-access
-                return self._table[interface_name][name]
-            # initializer ensures that interface name is in table and
-            # name must be in table for interface because it was derived
-            # from the introspection information, so this should never fail.
+                return self._table[name]
             except KeyError as err:
                 raise DbusClientRuntimeError(
                     "No entry found for interface %s and property %s" %
@@ -93,7 +90,8 @@ def managed_object_builder(spec):
             if interface_name not in table:
                 raise DbusClientRuntimeError(
                     "Object does not implement interface %s" % interface_name)
-            self._table = table  # pylint: disable=protected-access
+            # pylint: disable=protected-access
+            self._table = table[interface_name]
 
         namespace['__init__'] = __init__
 
