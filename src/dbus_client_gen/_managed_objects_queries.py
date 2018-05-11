@@ -61,10 +61,11 @@ def mo_query_builder(spec):
         for (object_path, data) in gmo.items():
             if not interface_name in data.keys():
                 continue
+            sub_table = data[interface_name]
 
             try:
-                if all(data[interface_name][key] == value \
-                        for (key, value) in props.items()):
+                if all(sub_table[key] == value
+                       for (key, value) in props.items()):
                     yield (object_path, data)
             except KeyError as err:
                 raise DbusClientRuntimeError(
