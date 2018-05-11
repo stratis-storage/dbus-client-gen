@@ -41,40 +41,39 @@ def managed_object_builder(spec):
         raise DbusClientGenerationError(
             "No name attribute found for interface.") from err
 
+    def build_property(name):
+        """
+        Build a single property getter for this class.
+
+        :param str name: the property name
+
+        :returns: the value of the property
+        :rtype: object
+        """
+
+        def dbus_func(self):
+            """
+            The property getter.
+            """
+            try:
+                # pylint: disable=protected-access
+                return self._table[interface_name][name]
+            # initializer ensures that interface name is in table and
+            # name must be in table for interface because it was derived
+            # from the introspection information, so this should never fail.
+            except KeyError as err:
+                raise DbusClientRuntimeError(
+                    "No entry found for interface %s and property %s" %
+                    (interface_name, name)) from err
+
+        return dbus_func
+
     def builder(namespace):
         """
         The property class's namespace.
 
         :param namespace: the class's namespace
         """
-
-        def build_property(name):
-            """
-            Build a single property getter for this class.
-
-            :param str name: the property name
-
-            :returns: the value of the property
-            :rtype: object
-            """
-
-            def dbus_func(self):
-                """
-                The property getter.
-                """
-                try:
-                    # pylint: disable=protected-access
-                    return self._table[interface_name][name]
-                # initializer ensures that interface name is in table and
-                # name must be in table for interface because it was derived
-                # from the introspection information, so this should never fail.
-                except KeyError as err:
-                    raise DbusClientRuntimeError(
-                        "No entry found for interface %s and property %s" %
-                        (interface_name, name)) from err
-
-            return dbus_func
-
         for prop in spec.findall('./property'):
             try:
                 name = prop.attrib['name']
