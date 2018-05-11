@@ -61,7 +61,7 @@ def managed_object_builder(spec):
             except KeyError as err:
                 raise DbusClientRuntimeError(
                     "No entry found for interface %s and property %s" %
-                    (interface_name, name)) from err
+                    (interface_name, name), interface_name) from err
 
         return dbus_func
 
@@ -89,7 +89,8 @@ def managed_object_builder(spec):
             """
             if interface_name not in table:
                 raise DbusClientRuntimeError(
-                    "Object does not implement interface %s" % interface_name)
+                    "Object does not implement interface %s" % interface_name,
+                    interface_name)
             # pylint: disable=protected-access
             self._table = table[interface_name]
 

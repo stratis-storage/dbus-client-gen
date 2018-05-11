@@ -58,6 +58,7 @@ def mo_query_builder(spec):
                     yield (object_path, data)
             except KeyError as err:
                 raise DbusClientRuntimeError(
-                    "Bad data for interface %s" % interface_name) from err
+                    "Bad data for interface %s" % interface_name,
+                    interface_name) from err
 
     return the_func

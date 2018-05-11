@@ -24,4 +24,13 @@ class DbusClientRuntimeError(DbusClientError):
     """
     Exception raised during execution of generated classes.
     """
-    pass
+
+    def __init__(self, message, interface_name):
+        """
+        Initialize with a message and an interface name.
+
+        :param str message: the error message
+        :param str interface_name: the interface name
+        """
+        super(DbusClientRuntimeError, self).__init__(message)
+        self.interface_name = interface_name
