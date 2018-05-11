@@ -62,9 +62,6 @@ class TestCase(unittest.TestCase):
         """
         query = mo_query_builder(spec)
 
-        with self.assertRaises(DbusClientRuntimeError):
-            list(query(dict(), {"bogus": None}))
-
         properties = [p.attrib['name'] for p in spec.findall("./property")]
         name = spec.attrib['name']
         table = {

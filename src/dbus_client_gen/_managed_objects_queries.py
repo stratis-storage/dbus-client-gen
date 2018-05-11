@@ -26,14 +26,6 @@ def mo_query_builder(spec):
         raise DbusClientGenerationError(
             "No name attribute found for interface.") from err
 
-    try:
-        property_names = \
-           frozenset(p.attrib['name'] for p in spec.findall("./property"))
-    except KeyError as err:  # pragma: no cover
-        fmt_str = ("No name attribute found for some property belonging to "
-                   "interface \"%s\"")
-        raise DbusClientGenerationError(fmt_str % interface_name) from err
-
     def the_func(gmo, props=None):
         """
         Takes a list of key/value pairs representing properties
@@ -54,10 +46,6 @@ def mo_query_builder(spec):
         :raises DbusClientRuntimeError:
         """
         props = dict() if props is None else props
-
-        if not frozenset(props.keys()) <= property_names:
-            raise DbusClientRuntimeError(
-                "Unknown property for interface %s" % interface_name)
 
         for (object_path, data) in gmo.items():
             if interface_name not in data:
