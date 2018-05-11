@@ -6,7 +6,7 @@ import sys
 
 arg_map = {
     "src/dbus_client_gen": [
-        "--reports=no",
+        "--reports=no", "--disable=duplicate-code",
         "--msg-template='{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}'"
     ],
     "tests": [

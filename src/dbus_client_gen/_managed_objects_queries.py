@@ -6,6 +6,7 @@ Code for generating methods suitable for identifying objects in
 the data structure returned by the GetManagedObjects() method.
 """
 
+from ._errors import DbusClientGenerationError
 from ._errors import DbusClientRuntimeError
 
 
@@ -21,17 +22,17 @@ def mo_query_builder(spec):
 
     try:
         interface_name = spec.attrib['name']
-    # Should not fail if introspection data is properly formed
     except KeyError as err:  # pragma: no cover
-        raise DbusClientRuntimeError("No name for interface.") from err
+        raise DbusClientGenerationError(
+            "No name attribute found for interface.") from err
 
     try:
         property_names = \
            frozenset(p.attrib['name'] for p in spec.findall("./property"))
-    # Should not fail if introspection data is properly formed
     except KeyError as err:  # pragma: no cover
-        raise DbusClientRuntimeError(
-            "No name for interface property.") from err
+        fmt_str = ("No name attribute found for some property belonging to "
+                   "interface \"%s\"")
+        raise DbusClientGenerationError(fmt_str % interface_name) from err
 
     def the_func(gmo, props=None):
         """

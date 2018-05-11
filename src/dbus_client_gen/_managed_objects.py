@@ -37,10 +37,9 @@ def managed_object_builder(spec):
 
     try:
         interface_name = spec.attrib['name']
-    # Should not fail if the data from Introspect() is well-formed.
     except KeyError as err:  # pragma: no cover
         raise DbusClientGenerationError(
-            "No name found for interface.") from err
+            "No name attribute found for interface.") from err
 
     def builder(namespace):
         """
@@ -81,9 +80,10 @@ def managed_object_builder(spec):
                 name = prop.attrib['name']
             # Should not fail if introspection data is well formed.
             except KeyError as err:  # pragma: no cover
+                fmt_str = ("No name attribute found for some property "
+                           "belonging to interface \"%s\"")
                 raise DbusClientGenerationError(
-                    "No entry found for interface %s and property %s" %
-                    (interface_name, name)) from err
+                    fmt_str % interface_name) from err
 
             namespace[name] = build_property(name)
 
