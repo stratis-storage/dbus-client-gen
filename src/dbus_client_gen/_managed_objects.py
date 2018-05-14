@@ -63,8 +63,8 @@ def managed_object_builder(spec):
                 """
                 The property getter.
                 """
-                # pylint: disable=protected-access
                 try:
+                    # pylint: disable=protected-access
                     return self._table[interface_name][name]
                 # initializer ensures that interface name is in table and
                 # name must be in table for interface because it was derived
