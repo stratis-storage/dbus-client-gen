@@ -59,7 +59,7 @@ def mo_query_builder(spec):
                 "Unknown property for interface %s" % interface_name)
 
         for (object_path, data) in gmo.items():
-            if not interface_name in data.keys():
+            if interface_name not in data:
                 continue
             sub_table = data[interface_name]
 
