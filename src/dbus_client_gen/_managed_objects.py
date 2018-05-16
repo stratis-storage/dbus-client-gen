@@ -69,7 +69,7 @@ def managed_object_builder(spec):
                 # initializer ensures that interface name is in table and
                 # name must be in table for interface because it was derived
                 # from the introspection information, so this should never fail.
-                except KeyError as err:  # pragma: no cover
+                except KeyError as err:
                     raise DbusClientRuntimeError(
                         "No entry found for interface %s and property %s" %
                         (interface_name, name)) from err
