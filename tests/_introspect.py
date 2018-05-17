@@ -136,35 +136,38 @@ def annotation_strategy():
     """
     Build a strategy to generate data for an introspection annotation.
     """
-    return builds(Annotation,
-                  fixed_dictionaries({
-                      'name': _TEXT_STRATEGY,
-                      'value': _TEXT_STRATEGY
-                  }), just(frozenset()))
+    return builds(
+        Annotation,
+        fixed_dictionaries({
+            'name': _TEXT_STRATEGY,
+            'value': _TEXT_STRATEGY
+        }), just(frozenset()))
 
 
 def arg_strategy():
     """
     Build a strategy to generate data for an introspection arg.
     """
-    return builds(Arg,
-                  fixed_dictionaries({
-                      'name': _TEXT_STRATEGY,
-                      'type': dbus_signatures(),
-                      'direction': sampled_from(["in", "out"])
-                  }), sets(annotation_strategy()))
+    return builds(
+        Arg,
+        fixed_dictionaries({
+            'name': _TEXT_STRATEGY,
+            'type': dbus_signatures(),
+            'direction': sampled_from(["in", "out"])
+        }), sets(annotation_strategy()))
 
 
 def interface_strategy():
     """
     Build a strategy to generate data for an introspection interface.
     """
-    return builds(Interface, fixed_dictionaries({
-        'name': _TEXT_STRATEGY,
-    }),
-                  sets(
-                      one_of(property_strategy(), method_strategy(),
-                             annotation_strategy(), signal_strategy())))
+    return builds(
+        Interface, fixed_dictionaries({
+            'name': _TEXT_STRATEGY,
+        }),
+        sets(
+            one_of(property_strategy(), method_strategy(),
+                   annotation_strategy(), signal_strategy())))
 
 
 def method_strategy():
@@ -193,26 +196,28 @@ def property_strategy():
     """
     Build a strategy to generate data for an introspection property.
     """
-    return builds(Property,
-                  fixed_dictionaries({
-                      'name':
-                      _TEXT_STRATEGY,
-                      'type':
-                      dbus_signatures(),
-                      'access':
-                      sampled_from(["read", "write", "readwrite"])
-                  }), sets(annotation_strategy()))
+    return builds(
+        Property,
+        fixed_dictionaries({
+            'name':
+            _TEXT_STRATEGY,
+            'type':
+            dbus_signatures(),
+            'access':
+            sampled_from(["read", "write", "readwrite"])
+        }), sets(annotation_strategy()))
 
 
 def signal_arg_strategy():
     """
     Build a strategy to generate data for an introspection arg for signals.
     """
-    return builds(Arg,
-                  fixed_dictionaries({
-                      'name': _TEXT_STRATEGY,
-                      'type': dbus_signatures(),
-                  }), sets(annotation_strategy()))
+    return builds(
+        Arg,
+        fixed_dictionaries({
+            'name': _TEXT_STRATEGY,
+            'type': dbus_signatures(),
+        }), sets(annotation_strategy()))
 
 
 def signal_strategy():
