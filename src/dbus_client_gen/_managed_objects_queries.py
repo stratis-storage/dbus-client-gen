@@ -6,7 +6,8 @@ Code for generating methods suitable for identifying objects in
 the data structure returned by the GetManagedObjects() method.
 """
 
-from ._errors import DbusClientRuntimeError
+from ._errors import DbusClientGenerationError
+from ._errors import DbusClientMissingSearchPropertiesError
 
 
 def mo_query_builder(spec):
@@ -21,17 +22,9 @@ def mo_query_builder(spec):
 
     try:
         interface_name = spec.attrib['name']
-    # Should not fail if introspection data is properly formed
     except KeyError as err:  # pragma: no cover
-        raise DbusClientRuntimeError("No name for interface.") from err
-
-    try:
-        property_names = \
-           frozenset(p.attrib['name'] for p in spec.findall("./property"))
-    # Should not fail if introspection data is properly formed
-    except KeyError as err:  # pragma: no cover
-        raise DbusClientRuntimeError(
-            "No name for interface property.") from err
+        raise DbusClientGenerationError(
+            "No name attribute found for interface.") from err
 
     def the_func(gmo, props=None):
         """
@@ -50,13 +43,9 @@ def mo_query_builder(spec):
         If props is None or an empty dict all objects that implement
         the designated interface are returned.
 
-        :raises DbusClientRuntimeError:
+        :raises DbusClientMissingSearchPropertiesError:
         """
         props = dict() if props is None else props
-
-        if not frozenset(props.keys()) <= property_names:
-            raise DbusClientRuntimeError(
-                "Unknown property for interface %s" % interface_name)
 
         for (object_path, data) in gmo.items():
             if interface_name not in data:
@@ -68,7 +57,14 @@ def mo_query_builder(spec):
                        for (key, value) in props.items()):
                     yield (object_path, data)
             except KeyError as err:
-                raise DbusClientRuntimeError(
-                    "Bad data for interface %s" % interface_name) from err
+                fmt_str = ("Missing properties in data for object \"%s\" for "
+                           "interface \"%s\": %s")
+                missing = ", ".join(
+                    str(x) for x in
+                    frozenset(props.keys()) - frozenset(sub_table.keys()))
+                raise DbusClientMissingSearchPropertiesError(
+                    fmt_str % (object_path, interface_name, missing),
+                    interface_name, object_path, [x for x in props.keys()],
+                    [x for x in sub_table.keys()]) from err
 
     return the_func

@@ -9,7 +9,8 @@ returned by GetManagedObjects().
 import types
 
 from ._errors import DbusClientGenerationError
-from ._errors import DbusClientRuntimeError
+from ._errors import DbusClientMissingInterfaceError
+from ._errors import DbusClientMissingPropertyError
 
 
 def managed_object_builder(spec):
@@ -37,10 +38,36 @@ def managed_object_builder(spec):
 
     try:
         interface_name = spec.attrib['name']
-    # Should not fail if the data from Introspect() is well-formed.
     except KeyError as err:  # pragma: no cover
         raise DbusClientGenerationError(
-            "No name found for interface.") from err
+            "No name attribute found for interface.") from err
+
+    def build_property(name):
+        """
+        Build a single property getter for this class.
+
+        :param str name: the property name
+
+        :returns: the value of the property
+        :rtype: object
+        """
+
+        def dbus_func(self):
+            """
+            The property getter.
+
+            :raises: DbusClientMissingPropertyError
+            """
+            try:
+                # pylint: disable=protected-access
+                return self._table[name]
+            except KeyError as err:
+                fmt_str = "No entry found for interface \"%s\" and property \"%s\""
+                raise DbusClientMissingPropertyError(
+                    fmt_str % (interface_name,
+                               name), interface_name, name) from err
+
+        return dbus_func
 
     def builder(namespace):
         """
@@ -48,53 +75,30 @@ def managed_object_builder(spec):
 
         :param namespace: the class's namespace
         """
-
-        def build_property(name):
-            """
-            Build a single property getter for this class.
-
-            :param str name: the property name
-
-            :returns: the value of the property
-            :rtype: object
-            """
-
-            def dbus_func(self):
-                """
-                The property getter.
-                """
-                try:
-                    # pylint: disable=protected-access
-                    return self._table[interface_name][name]
-                # initializer ensures that interface name is in table and
-                # name must be in table for interface because it was derived
-                # from the introspection information, so this should never fail.
-                except KeyError as err:
-                    raise DbusClientRuntimeError(
-                        "No entry found for interface %s and property %s" %
-                        (interface_name, name)) from err
-
-            return dbus_func
-
         for prop in spec.findall('./property'):
             try:
                 name = prop.attrib['name']
             # Should not fail if introspection data is well formed.
             except KeyError as err:  # pragma: no cover
+                fmt_str = ("No name attribute found for some property "
+                           "belonging to interface \"%s\"")
                 raise DbusClientGenerationError(
-                    "No entry found for interface %s and property %s" %
-                    (interface_name, name)) from err
+                    fmt_str % interface_name) from err
 
             namespace[name] = build_property(name)
 
         def __init__(self, table):
             """
             The initalizer for this class.
+
+            :raises: DbusClientMissingInterfaceError
             """
             if interface_name not in table:
-                raise DbusClientRuntimeError(
-                    "Object does not implement interface %s" % interface_name)
-            self._table = table  # pylint: disable=protected-access
+                fmt_str = "No data in table for interface \"%s\" found"
+                raise DbusClientMissingInterfaceError(fmt_str % interface_name,
+                                                      interface_name)
+            # pylint: disable=protected-access
+            self._table = table[interface_name]
 
         namespace['__init__'] = __init__
 

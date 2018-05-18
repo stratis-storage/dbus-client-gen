@@ -10,7 +10,9 @@ from hypothesis import given
 from dbus_client_gen import mo_query_builder
 from dbus_client_gen import managed_object_class
 
-from dbus_client_gen._errors import DbusClientRuntimeError
+from dbus_client_gen._errors import DbusClientMissingInterfaceError
+from dbus_client_gen._errors import DbusClientMissingPropertyError
+from dbus_client_gen._errors import DbusClientMissingSearchPropertiesError
 
 from ._introspect import interface_strategy
 
@@ -34,7 +36,7 @@ class TestCase(unittest.TestCase):
         property_names = [p.attrib['name'] for p in spec.findall("./property")]
         self.assertTrue(all(hasattr(klass, name) for name in property_names))
 
-        with self.assertRaises(DbusClientRuntimeError):
+        with self.assertRaises(DbusClientMissingInterfaceError):
             klass({interface_name + "x": {}})
 
         table = {
@@ -52,7 +54,7 @@ class TestCase(unittest.TestCase):
         if table_interface != dict():
             remove_name = random.choice([x for x in table_interface])
             del table_interface[remove_name]
-            with self.assertRaises(DbusClientRuntimeError):
+            with self.assertRaises(DbusClientMissingPropertyError):
                 getattr(obj, remove_name)()
 
     @given(interface_strategy().map(lambda x: x.element()))
@@ -61,9 +63,6 @@ class TestCase(unittest.TestCase):
         Test that the query returns appropriate values for its query input.
         """
         query = mo_query_builder(spec)
-
-        with self.assertRaises(DbusClientRuntimeError):
-            list(query(dict(), {"bogus": None}))
 
         properties = [p.attrib['name'] for p in spec.findall("./property")]
         name = spec.attrib['name']
@@ -79,14 +78,16 @@ class TestCase(unittest.TestCase):
             },
         }
 
-        if properties:
-            self.assertEqual(
-                len(list(query(table, dict((k, None) for k in properties)))),
-                1)
-            with self.assertRaises(DbusClientRuntimeError):
+        result = list(query(table, dict((k, None) for k in properties)))
+        if properties != []:
+            self.assertEqual(len(result), 1)
+            self.assertEqual(result[0][0], "junk")
+
+            with self.assertRaises(DbusClientMissingSearchPropertiesError):
                 table = {"junk": {name: dict()}}
                 list(query(table, dict((k, None) for k in properties)))
         else:
+            self.assertEqual(len(result), 2)
             self.assertEqual(
-                len(list(query(table, dict((k, None) for k in properties)))),
-                2)
+                frozenset(x[0] for x in result), frozenset(["junk",
+                                                            "nomatch"]))

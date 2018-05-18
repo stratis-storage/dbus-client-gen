@@ -5,5 +5,12 @@
 Top-level classes and methods.
 """
 
+from ._errors import DbusClientError
+from ._errors import DbusClientGenerationError
+from ._errors import DbusClientMissingInterfaceError
+from ._errors import DbusClientMissingPropertyError
+from ._errors import DbusClientMissingSearchPropertiesError
+from ._errors import DbusClientRuntimeError
+
 from ._managed_objects import managed_object_class
 from ._managed_objects_queries import mo_query_builder
