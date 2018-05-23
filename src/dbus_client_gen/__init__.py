@@ -14,3 +14,4 @@ from ._errors import DbusClientRuntimeError
 
 from ._managed_objects import managed_object_class
 from ._managed_objects_queries import mo_query_builder
+from ._managed_objects_queries import GMOQuery

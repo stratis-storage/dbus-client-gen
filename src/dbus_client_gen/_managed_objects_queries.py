@@ -10,6 +10,59 @@ from ._errors import DbusClientGenerationError
 from ._errors import DbusClientMissingSearchPropertiesError
 
 
+class GMOQuery(object):
+    """
+    Class that implements a query on the result of a D-Bus GetManagedObjects()
+    call.
+    """
+
+    def __init__(self, filter_func):
+        """
+        Initialize the query with its function, which is run on a single
+        entry in the GetManagedObjects result.
+        """
+        self._filter_func = filter_func
+
+    def search(self, gmo_result):
+        """
+        Search a GetManagedObjects() result, generating any matches.
+
+        :raises DbusClientMissingSearchPropertiesError:
+        """
+        return ((object_path, data)
+                for (object_path, data) in gmo_result.items()
+                if self._filter_func(data))
+
+    # BOOLEAN OPERATORS
+    # These operations are some of the more usual ones. Other operations can
+    # easily be added as necessary. These operations contain the functionally
+    # complete set of operations, {AND, NOT}, so will always be sufficient.
+
+    def conjunction(self, other):
+        """
+        Compose self and other and return a new query which has the effect
+        of a conjunction of self and other.
+        """
+        #pylint: disable=protected-access
+        return GMOQuery(
+            lambda item: self._filter_func(item) and other._filter_func(item))
+
+    def disjunction(self, other):
+        """
+        Compose self and other and return a new query which has the effect
+        of a disjunction of self and other.
+        """
+        #pylint: disable=protected-access
+        return GMOQuery(
+            lambda item: self._filter_func(item) or other._filter_func(item))
+
+    def negation(self):
+        """
+        The negation of query.
+        """
+        return GMOQuery(lambda item: not self._filter_func(item))
+
+
 def mo_query_builder(spec):
     """
     Returns a function that builds a query method for an interface.
