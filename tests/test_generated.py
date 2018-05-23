@@ -22,7 +22,7 @@ class TestCase(unittest.TestCase):
     Test the behavior of various auto-generated classes
     """
 
-    @given(interface_strategy().map(lambda x: x.element()))
+    @given(interface_strategy(max_children=30).map(lambda x: x.element()))
     def test_managed_object(self, spec):
         """
         Test that the GMO object has the correct set of methods.
@@ -57,7 +57,7 @@ class TestCase(unittest.TestCase):
             with self.assertRaises(DbusClientMissingPropertyError):
                 getattr(obj, remove_name)()
 
-    @given(interface_strategy().map(lambda x: x.element()))
+    @given(interface_strategy(max_children=30).map(lambda x: x.element()))
     def test_managed_object_query(self, spec):
         """
         Test that the query returns appropriate values for its query input.

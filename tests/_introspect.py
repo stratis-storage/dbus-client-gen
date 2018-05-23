@@ -155,16 +155,23 @@ def arg_strategy():
                   }), sets(annotation_strategy()))
 
 
-def interface_strategy():
+def interface_strategy(*, min_children=None, max_children=None):
     """
     Build a strategy to generate data for an introspection interface.
+
+    :param min_children: the minimum number of child elements in this interface
+    :type min_children: non-negative int or None
+    :param max_children: the maximum number of child elements in this interface
+    :type max_children: non-negative int or None
     """
     return builds(Interface, fixed_dictionaries({
         'name': _TEXT_STRATEGY,
     }),
                   sets(
                       one_of(property_strategy(), method_strategy(),
-                             annotation_strategy(), signal_strategy())))
+                             annotation_strategy(), signal_strategy()),
+                      min_size=min_children,
+                      max_size=max_children))
 
 
 def method_strategy():
