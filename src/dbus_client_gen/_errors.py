@@ -63,6 +63,29 @@ class DbusClientMissingSearchPropertiesError(DbusClientRuntimeError):
         self.data_keys = data_keys
 
 
+class DbusClientUnknownSearchPropertiesError(DbusClientRuntimeError):
+    """
+    Exception returned when a query is specified with a property that is
+    not found in the given interface.
+    """
+
+    def __init__(self, message, interface_name, specified, allowed):
+        """
+        Initialize exception.
+
+        :param str message: the error message
+        :param str interface_name: the interface name
+        :param specified: the specified keys
+        :type specified: list of str
+        :param allowed: the allowed keys
+        :type allowed: list of str
+        """
+        super(DbusClientUnknownSearchPropertiesError, self).__init__(
+            message, interface_name)
+        self.specified = specified
+        self.allowed = allowed
+
+
 class DbusClientMissingPropertyError(
         DbusClientRuntimeError):  # pragma: no cover
     """
