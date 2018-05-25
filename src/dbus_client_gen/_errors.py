@@ -42,15 +42,12 @@ class DbusClientMissingSearchPropertiesError(DbusClientRuntimeError):
     missing.
     """
 
-    # pylint: disable=too-many-arguments
-    def __init__(self, message, interface_name, object_path, query_keys,
-                 data_keys):
+    def __init__(self, message, interface_name, query_keys, data_keys):
         """
         Initialize exception.
 
         :param str message: the error message
         :param str interface_name: the interface name
-        :param str object_path: the object path of object with the data
         :param query_keys: names of properties used in query
         :type query_keys: list of str
         :param data_keys: the keys actually available in the data
@@ -58,9 +55,31 @@ class DbusClientMissingSearchPropertiesError(DbusClientRuntimeError):
         """
         super(DbusClientMissingSearchPropertiesError, self).__init__(
             message, interface_name)
-        self.object_path = object_path
         self.query_keys = query_keys
         self.data_keys = data_keys
+
+
+class DbusClientUnknownSearchPropertiesError(DbusClientRuntimeError):
+    """
+    Exception returned when a query is specified with a property that is
+    not found in the given interface.
+    """
+
+    def __init__(self, message, interface_name, specified, allowed):
+        """
+        Initialize exception.
+
+        :param str message: the error message
+        :param str interface_name: the interface name
+        :param specified: the specified keys
+        :type specified: list of str
+        :param allowed: the allowed keys
+        :type allowed: list of str
+        """
+        super(DbusClientUnknownSearchPropertiesError, self).__init__(
+            message, interface_name)
+        self.specified = specified
+        self.allowed = allowed
 
 
 class DbusClientMissingPropertyError(

@@ -13,6 +13,7 @@ from dbus_client_gen import managed_object_class
 from dbus_client_gen._errors import DbusClientMissingInterfaceError
 from dbus_client_gen._errors import DbusClientMissingPropertyError
 from dbus_client_gen._errors import DbusClientMissingSearchPropertiesError
+from dbus_client_gen._errors import DbusClientUnknownSearchPropertiesError
 
 from ._introspect import interface_strategy
 
@@ -64,6 +65,13 @@ class TestCase(unittest.TestCase):
         """
         query = mo_query_builder(spec)
 
+        bad = {"bogus": None}
+        with self.assertRaises(DbusClientUnknownSearchPropertiesError) \
+                as context:
+            query(bad)
+        exception = context.exception
+        self.assertEqual(frozenset(exception.specified), frozenset(bad.keys()))
+
         properties = [p.attrib['name'] for p in spec.findall("./property")]
         name = spec.attrib['name']
         table = {
@@ -78,14 +86,22 @@ class TestCase(unittest.TestCase):
             },
         }
 
-        result = list(query(table, dict((k, None) for k in properties)))
+        query_object = query(dict((k, None) for k in properties))
+        result = list(query_object.search(table))
+        self.assertEqual(
+            result, list(query_object.conjunction(query_object).search(table)))
+        self.assertEqual(
+            result, list(query_object.disjunction(query_object).search(table)))
+        self.assertEqual(result,
+                         list(
+                             query_object.negation().negation().search(table)))
         if properties != []:
             self.assertEqual(len(result), 1)
             self.assertEqual(result[0][0], "junk")
 
             with self.assertRaises(DbusClientMissingSearchPropertiesError):
                 table = {"junk": {name: dict()}}
-                list(query(table, dict((k, None) for k in properties)))
+                list(query(dict((k, None) for k in properties)).search(table))
         else:
             self.assertEqual(len(result), 2)
             self.assertEqual(
