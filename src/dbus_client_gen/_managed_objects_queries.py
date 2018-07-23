@@ -11,7 +11,7 @@ from ._errors import DbusClientMissingSearchPropertiesError
 from ._errors import DbusClientUnknownSearchPropertiesError
 
 
-class GMOQuery(object):
+class GMOQuery():
     """
     Class that implements a query on the result of a D-Bus GetManagedObjects()
     call.
