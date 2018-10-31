@@ -8,6 +8,7 @@ the data structure returned by the GetManagedObjects() method.
 
 from ._errors import DbusClientGenerationError
 from ._errors import DbusClientMissingSearchPropertiesError
+from ._errors import DbusClientUniqueResultError
 from ._errors import DbusClientUnknownSearchPropertiesError
 
 
@@ -56,23 +57,39 @@ class GMOQuery():
         self._interface_name = interface_name
         self._props = props
         self._filter_func = filter_func
+        self._require_unique = False
+
+    def require_unique_match(self, value=True):
+        """
+        If value is True or None, the search requires the result to be unique,
+        i.e. there must be exactly one match.
+        """
+        self._require_unique = value
+        return self
 
     def search(self, gmo_result):
         """
         Search a GetManagedObjects() result, generating any matches.
 
         :raises DbusClientMissingSearchPropertiesError:
-        """
-        return ((object_path, data)
-                for (object_path, data) in gmo_result.items()
-                if self._filter_func(data))
 
-    def set_uniqueness(self, value=True):
+        :returns: a generator of tuples of objects matched by the search
         """
-        If value is True or None, the search requires the result to be unique,
-        i.e. there must be exactly one match.
-        """
-        self._require_unique = value
+        result = ((object_path, data)
+                  for (object_path, data) in gmo_result.items()
+                  if self._filter_func(data))
+
+        if self._require_unique:
+            list_result = [x for x in result]
+            if len(list_result) != 1:
+                raise DbusClientUniqueResultError(
+                    "No unique match found for interface %s and properties %s, found %s"
+                    % (self._interface_name, self._props, list_result),
+                    self._interface_name, self._props, list_result)
+            else:
+                result = (x for x in list_result)
+
+        return result
 
 
 def mo_query_builder(spec):
