@@ -92,13 +92,6 @@ class TestCase(unittest.TestCase):
 
         query_object = query(dict((k, None) for k in properties))
         result = list(query_object.search(table))
-        self.assertEqual(
-            result, list(query_object.conjunction(query_object).search(table)))
-        self.assertEqual(
-            result, list(query_object.disjunction(query_object).search(table)))
-        self.assertEqual(result,
-                         list(
-                             query_object.negation().negation().search(table)))
         if properties != []:
             self.assertEqual(len(result), 1)
             self.assertEqual(result[0][0], "junk")

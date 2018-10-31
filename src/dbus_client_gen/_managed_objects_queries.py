@@ -34,34 +34,12 @@ class GMOQuery():
                 for (object_path, data) in gmo_result.items()
                 if self._filter_func(data))
 
-    # BOOLEAN OPERATORS
-    # These operations are some of the more usual ones. Other operations can
-    # easily be added as necessary. These operations contain the functionally
-    # complete set of operations, {AND, NOT}, so will always be sufficient.
-
-    def conjunction(self, other):
+    def set_uniqueness(self, value=True):
         """
-        Compose self and other and return a new query which has the effect
-        of a conjunction of self and other.
+        If value is True or None, the search requires the result to be unique,
+        i.e. there must be exactly one match.
         """
-        #pylint: disable=protected-access
-        return GMOQuery(
-            lambda item: self._filter_func(item) and other._filter_func(item))
-
-    def disjunction(self, other):
-        """
-        Compose self and other and return a new query which has the effect
-        of a disjunction of self and other.
-        """
-        #pylint: disable=protected-access
-        return GMOQuery(
-            lambda item: self._filter_func(item) or other._filter_func(item))
-
-    def negation(self):
-        """
-        The negation of query.
-        """
-        return GMOQuery(lambda item: not self._filter_func(item))
+        self._require_unique = value
 
 
 def mo_query_builder(spec):
