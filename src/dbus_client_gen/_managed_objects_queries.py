@@ -17,11 +17,44 @@ class GMOQuery():
     call.
     """
 
-    def __init__(self, filter_func):
+    def __init__(self, interface_name, props):
         """
         Initialize the query with its function, which is run on a single
-        entry in the GetManagedObjects result.
+        entry in the GetManagedObjects result. The function is generated from
+        interface_name and props.
+
+        :param str interface_name: the particular interface
+        :param dict props: properties of the interface on which to match
         """
+
+        def filter_func(data):
+            """
+            Returns true if an item should be kept, false otherwise.
+
+            :returns: true for acceptance, false for rejection
+            :rtype: bool
+            :raises DbusClientMissingSearchPropertiesError:
+            """
+            if interface_name not in data:
+                return False
+            sub_table = data[interface_name]
+
+            try:
+                return all(
+                    sub_table[key] == value for (key, value) in props.items())
+            except KeyError as err:
+                fmt_str = ("Missing properties in data for some object in "
+                           "interface \"%s\": %s")
+                missing = ", ".join(
+                    str(x) for x in
+                    frozenset(props.keys()) - frozenset(sub_table.keys()))
+                raise DbusClientMissingSearchPropertiesError(
+                    fmt_str % (interface_name, missing), interface_name,
+                    [x for x in props.keys()],
+                    [x for x in sub_table.keys()]) from err
+
+        self._interface_name = interface_name
+        self._props = props
         self._filter_func = filter_func
 
     def search(self, gmo_result):
@@ -90,32 +123,6 @@ def mo_query_builder(spec):
                 [key for key in props.keys()],
                 [name for name in property_names])
 
-        def filter_func(data):
-            """
-            Returns true if an item should be kept, false otherwise.
-
-            :returns: true for acceptance, false for rejection
-            :rtype: bool
-            :raises DbusClientMissingSearchPropertiesError:
-            """
-            if interface_name not in data:
-                return False
-            sub_table = data[interface_name]
-
-            try:
-                return all(
-                    sub_table[key] == value for (key, value) in props.items())
-            except KeyError as err:
-                fmt_str = ("Missing properties in data for some object in "
-                           "interface \"%s\": %s")
-                missing = ", ".join(
-                    str(x) for x in
-                    frozenset(props.keys()) - frozenset(sub_table.keys()))
-                raise DbusClientMissingSearchPropertiesError(
-                    fmt_str % (interface_name, missing), interface_name,
-                    [x for x in props.keys()],
-                    [x for x in sub_table.keys()]) from err
-
-        return GMOQuery(filter_func)
+        return GMOQuery(interface_name, props)
 
     return the_func
