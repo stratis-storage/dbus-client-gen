@@ -18,7 +18,6 @@ import xml.etree.ElementTree as ET
 from hypothesis.strategies import builds
 from hypothesis.strategies import fixed_dictionaries
 from hypothesis.strategies import just
-from hypothesis.strategies import one_of
 from hypothesis.strategies import recursive
 from hypothesis.strategies import sampled_from
 from hypothesis.strategies import sets
@@ -168,8 +167,8 @@ def interface_strategy(*, min_children=0, max_children=None):
         'name': _TEXT_STRATEGY,
     }),
                   sets(
-                      one_of(property_strategy(), method_strategy(),
-                             annotation_strategy(), signal_strategy()),
+                      annotation_strategy() | property_strategy()
+                      | method_strategy() | signal_strategy(),
                       min_size=min_children,
                       max_size=max_children))
 
@@ -180,7 +179,7 @@ def method_strategy():
     """
     return builds(Method, fixed_dictionaries({
         'name': _TEXT_STRATEGY,
-    }), sets(one_of(arg_strategy(), annotation_strategy())))
+    }), sets(annotation_strategy() | arg_strategy()))
 
 
 def _node_function(strat):
@@ -228,4 +227,4 @@ def signal_strategy():
     """
     return builds(Signal, fixed_dictionaries({
         'name': _TEXT_STRATEGY
-    }), sets(one_of(signal_arg_strategy(), annotation_strategy())))
+    }), sets(annotation_strategy() | signal_arg_strategy()))
