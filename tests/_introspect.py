@@ -155,12 +155,12 @@ def arg_strategy():
                   }), sets(annotation_strategy()))
 
 
-def interface_strategy(*, min_children=None, max_children=None):
+def interface_strategy(*, min_children=0, max_children=None):
     """
     Build a strategy to generate data for an introspection interface.
 
     :param min_children: the minimum number of child elements in this interface
-    :type min_children: non-negative int or None
+    :type min_children: non-negative int
     :param max_children: the maximum number of child elements in this interface
     :type max_children: non-negative int or None
     """

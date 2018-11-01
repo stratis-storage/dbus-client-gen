@@ -6,6 +6,8 @@ import random
 import unittest
 
 from hypothesis import given
+from hypothesis import settings
+from hypothesis import HealthCheck
 
 from dbus_client_gen import mo_query_builder
 from dbus_client_gen import managed_object_class
@@ -24,6 +26,7 @@ class TestCase(unittest.TestCase):
     """
 
     @given(interface_strategy(max_children=30).map(lambda x: x.element()))
+    @settings(suppress_health_check=[HealthCheck.too_slow])
     def test_managed_object(self, spec):
         """
         Test that the GMO object has the correct set of methods.
@@ -59,6 +62,7 @@ class TestCase(unittest.TestCase):
                 getattr(obj, remove_name)()
 
     @given(interface_strategy(max_children=30).map(lambda x: x.element()))
+    @settings(suppress_health_check=[HealthCheck.too_slow])
     def test_managed_object_query(self, spec):
         """
         Test that the query returns appropriate values for its query input.
