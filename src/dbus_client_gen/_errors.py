@@ -118,3 +118,43 @@ class DbusClientMissingInterfaceError(DbusClientRuntimeError):
         # pylint: disable=useless-super-delegation
         super(DbusClientMissingInterfaceError, self).__init__(
             message, interface_name)
+
+
+class DbusClientSearchConditionError(DbusClientRuntimeError):
+    """
+    Exception raised when the search result does not match specified
+    requirements.
+    """
+
+    def __init__(self, message, interface_name):
+        """
+        Initialize exception.
+
+        :param str message: the error message
+        :param str interface_name: the interface name
+        """
+        # Note that if this is not disabled, pylint complains about
+        # super-init-not-called instead.
+        # pylint: disable=useless-super-delegation
+        super(DbusClientSearchConditionError, self).__init__(
+            message, interface_name)
+
+
+class DbusClientUniqueResultError(DbusClientSearchConditionError):
+    """
+    Exception raised when the search result does not yield a unique item.
+    """
+
+    def __init__(self, message, interface_name, props, result):
+        """
+        Initialize exception.
+
+        :param str message: the error message
+        :param str interface_name: the interface name
+        :param dict props: the list of properties for this interface to match
+        :param list result: the list of objects found via the search string
+        """
+        super(DbusClientUniqueResultError, self).__init__(
+            message, interface_name)
+        self.props = props
+        self.result = result

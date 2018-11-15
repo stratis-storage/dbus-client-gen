@@ -15,6 +15,7 @@ from dbus_client_gen import managed_object_class
 from dbus_client_gen._errors import DbusClientMissingInterfaceError
 from dbus_client_gen._errors import DbusClientMissingPropertyError
 from dbus_client_gen._errors import DbusClientMissingSearchPropertiesError
+from dbus_client_gen._errors import DbusClientUniqueResultError
 from dbus_client_gen._errors import DbusClientUnknownSearchPropertiesError
 
 from ._introspect import interface_strategy
@@ -92,22 +93,22 @@ class TestCase(unittest.TestCase):
 
         query_object = query(dict((k, None) for k in properties))
         result = list(query_object.search(table))
-        self.assertEqual(
-            result, list(query_object.conjunction(query_object).search(table)))
-        self.assertEqual(
-            result, list(query_object.disjunction(query_object).search(table)))
-        self.assertEqual(result,
-                         list(
-                             query_object.negation().negation().search(table)))
         if properties != []:
             self.assertEqual(len(result), 1)
             self.assertEqual(result[0][0], "junk")
 
+            result = query_object.require_unique_match().search(table)
+            self.assertEqual(len(list(result)), 1)
+
             with self.assertRaises(DbusClientMissingSearchPropertiesError):
                 table = {"junk": {name: dict()}}
                 list(query(dict((k, None) for k in properties)).search(table))
+
         else:
             self.assertEqual(len(result), 2)
             self.assertEqual(
                 frozenset(x[0] for x in result), frozenset(["junk",
                                                             "nomatch"]))
+
+            with self.assertRaises(DbusClientUniqueResultError):
+                query_object.require_unique_match().search(table)

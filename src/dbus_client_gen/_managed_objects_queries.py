@@ -8,6 +8,7 @@ the data structure returned by the GetManagedObjects() method.
 
 from ._errors import DbusClientGenerationError
 from ._errors import DbusClientMissingSearchPropertiesError
+from ._errors import DbusClientUniqueResultError
 from ._errors import DbusClientUnknownSearchPropertiesError
 
 
@@ -17,51 +18,78 @@ class GMOQuery():
     call.
     """
 
-    def __init__(self, filter_func):
+    def __init__(self, interface_name, props):
         """
         Initialize the query with its function, which is run on a single
-        entry in the GetManagedObjects result.
+        entry in the GetManagedObjects result. The function is generated from
+        interface_name and props.
+
+        :param str interface_name: the particular interface
+        :param dict props: properties of the interface on which to match
         """
+
+        def filter_func(data):
+            """
+            Returns true if an item should be kept, false otherwise.
+
+            :returns: true for acceptance, false for rejection
+            :rtype: bool
+            :raises DbusClientMissingSearchPropertiesError:
+            """
+            if interface_name not in data:
+                return False
+            sub_table = data[interface_name]
+
+            try:
+                return all(
+                    sub_table[key] == value for (key, value) in props.items())
+            except KeyError as err:
+                fmt_str = ("Missing properties in data for some object in "
+                           "interface \"%s\": %s")
+                missing = ", ".join(
+                    str(x) for x in
+                    frozenset(props.keys()) - frozenset(sub_table.keys()))
+                raise DbusClientMissingSearchPropertiesError(
+                    fmt_str % (interface_name, missing), interface_name,
+                    [x for x in props.keys()],
+                    [x for x in sub_table.keys()]) from err
+
+        self._interface_name = interface_name
+        self._props = props
         self._filter_func = filter_func
+        self._require_unique = False
+
+    def require_unique_match(self, value=True):
+        """
+        If value is True or None, the search requires the result to be unique,
+        i.e. there must be exactly one match.
+        """
+        self._require_unique = value
+        return self
 
     def search(self, gmo_result):
         """
         Search a GetManagedObjects() result, generating any matches.
 
         :raises DbusClientMissingSearchPropertiesError:
-        """
-        return ((object_path, data)
-                for (object_path, data) in gmo_result.items()
-                if self._filter_func(data))
 
-    # BOOLEAN OPERATORS
-    # These operations are some of the more usual ones. Other operations can
-    # easily be added as necessary. These operations contain the functionally
-    # complete set of operations, {AND, NOT}, so will always be sufficient.
+        :returns: a generator of tuples of objects matched by the search
+        """
+        result = ((object_path, data)
+                  for (object_path, data) in gmo_result.items()
+                  if self._filter_func(data))
 
-    def conjunction(self, other):
-        """
-        Compose self and other and return a new query which has the effect
-        of a conjunction of self and other.
-        """
-        #pylint: disable=protected-access
-        return GMOQuery(
-            lambda item: self._filter_func(item) and other._filter_func(item))
+        if self._require_unique:
+            list_result = [x for x in result]
+            if len(list_result) != 1:
+                raise DbusClientUniqueResultError(
+                    "No unique match found for interface %s and properties %s, found %s"
+                    % (self._interface_name, self._props, list_result),
+                    self._interface_name, self._props, list_result)
+            else:
+                result = (x for x in list_result)
 
-    def disjunction(self, other):
-        """
-        Compose self and other and return a new query which has the effect
-        of a disjunction of self and other.
-        """
-        #pylint: disable=protected-access
-        return GMOQuery(
-            lambda item: self._filter_func(item) or other._filter_func(item))
-
-    def negation(self):
-        """
-        The negation of query.
-        """
-        return GMOQuery(lambda item: not self._filter_func(item))
+        return result
 
 
 def mo_query_builder(spec):
@@ -112,32 +140,6 @@ def mo_query_builder(spec):
                 [key for key in props.keys()],
                 [name for name in property_names])
 
-        def filter_func(data):
-            """
-            Returns true if an item should be kept, false otherwise.
-
-            :returns: true for acceptance, false for rejection
-            :rtype: bool
-            :raises DbusClientMissingSearchPropertiesError:
-            """
-            if interface_name not in data:
-                return False
-            sub_table = data[interface_name]
-
-            try:
-                return all(
-                    sub_table[key] == value for (key, value) in props.items())
-            except KeyError as err:
-                fmt_str = ("Missing properties in data for some object in "
-                           "interface \"%s\": %s")
-                missing = ", ".join(
-                    str(x) for x in
-                    frozenset(props.keys()) - frozenset(sub_table.keys()))
-                raise DbusClientMissingSearchPropertiesError(
-                    fmt_str % (interface_name, missing), interface_name,
-                    [x for x in props.keys()],
-                    [x for x in sub_table.keys()]) from err
-
-        return GMOQuery(filter_func)
+        return GMOQuery(interface_name, props)
 
     return the_func
