@@ -60,7 +60,6 @@ class XMLElement(ABC):
         """
         Method which returns the tag for this class.
         """
-        pass
 
 
 class Annotation(XMLElement):

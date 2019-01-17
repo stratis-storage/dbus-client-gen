@@ -10,14 +10,12 @@ class DbusClientError(Exception):
     """
     Top-level error.
     """
-    pass
 
 
 class DbusClientGenerationError(DbusClientError):
     """
     Exception during generation of classes.
     """
-    pass
 
 
 class DbusClientRuntimeError(DbusClientError):
