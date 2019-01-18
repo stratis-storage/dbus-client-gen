@@ -2,6 +2,7 @@
 Test generation of class for invoking dbus methods.
 """
 
+from os import sys
 import random
 import unittest
 
@@ -19,6 +20,10 @@ from dbus_client_gen._errors import DbusClientUniqueResultError
 from dbus_client_gen._errors import DbusClientUnknownSearchPropertiesError
 
 from ._introspect import interface_strategy
+
+settings.register_profile("tracing", deadline=None)
+if sys.gettrace() is not None:
+    settings.load_profile("tracing")
 
 
 class TestCase(unittest.TestCase):
