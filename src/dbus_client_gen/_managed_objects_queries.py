@@ -86,8 +86,7 @@ class GMOQuery():
                     "No unique match found for interface %s and properties %s, found %s"
                     % (self._interface_name, self._props, list_result),
                     self._interface_name, self._props, list_result)
-            else:
-                result = (x for x in list_result)
+            result = (x for x in list_result)
 
         return result
 
