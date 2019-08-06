@@ -52,7 +52,8 @@ class DbusClientMissingSearchPropertiesError(DbusClientRuntimeError):
         :type data_keys: list of str
         """
         super(DbusClientMissingSearchPropertiesError, self).__init__(
-            message, interface_name)
+            message, interface_name
+        )
         self.query_keys = query_keys
         self.data_keys = data_keys
 
@@ -75,13 +76,13 @@ class DbusClientUnknownSearchPropertiesError(DbusClientRuntimeError):
         :type allowed: list of str
         """
         super(DbusClientUnknownSearchPropertiesError, self).__init__(
-            message, interface_name)
+            message, interface_name
+        )
         self.specified = specified
         self.allowed = allowed
 
 
-class DbusClientMissingPropertyError(
-        DbusClientRuntimeError):  # pragma: no cover
+class DbusClientMissingPropertyError(DbusClientRuntimeError):  # pragma: no cover
     """
     Exception returned when GMO data does not contain the property name.
     """
@@ -94,8 +95,7 @@ class DbusClientMissingPropertyError(
         :param str interface_name: the interface name
         :param str property_name: the name of the property to look up
         """
-        super(DbusClientMissingPropertyError, self).__init__(
-            message, interface_name)
+        super(DbusClientMissingPropertyError, self).__init__(message, interface_name)
         self.property_name = property_name
 
 
@@ -114,8 +114,7 @@ class DbusClientMissingInterfaceError(DbusClientRuntimeError):
         # Note that if this is not disabled, pylint complains about
         # super-init-not-called instead.
         # pylint: disable=useless-super-delegation
-        super(DbusClientMissingInterfaceError, self).__init__(
-            message, interface_name)
+        super(DbusClientMissingInterfaceError, self).__init__(message, interface_name)
 
 
 class DbusClientSearchConditionError(DbusClientRuntimeError):
@@ -134,8 +133,7 @@ class DbusClientSearchConditionError(DbusClientRuntimeError):
         # Note that if this is not disabled, pylint complains about
         # super-init-not-called instead.
         # pylint: disable=useless-super-delegation
-        super(DbusClientSearchConditionError, self).__init__(
-            message, interface_name)
+        super(DbusClientSearchConditionError, self).__init__(message, interface_name)
 
 
 class DbusClientUniqueResultError(DbusClientSearchConditionError):
@@ -152,7 +150,6 @@ class DbusClientUniqueResultError(DbusClientSearchConditionError):
         :param dict props: the list of properties for this interface to match
         :param list result: the list of objects found via the search string
         """
-        super(DbusClientUniqueResultError, self).__init__(
-            message, interface_name)
+        super(DbusClientUniqueResultError, self).__init__(message, interface_name)
         self.props = props
         self.result = result

@@ -23,7 +23,7 @@ from dbus_client_gen._errors import DbusClientUnknownSearchPropertiesError
 from ._introspect import interface_strategy
 
 settings.register_profile("tracing", deadline=None)
-if sys.gettrace() is not None or environ.get('TRAVIS') is not None:
+if sys.gettrace() is not None or environ.get("TRAVIS") is not None:
     settings.load_profile("tracing")
 
 
@@ -42,25 +42,28 @@ class TestCase(unittest.TestCase):
 
         Test that there is an exception if the subtable is missing an entry.
         """
-        interface_name = spec.attrib['name']
+        interface_name = spec.attrib["name"]
         klass = managed_object_class(interface_name, spec)
-        property_names = [p.attrib['name'] for p in spec.findall("./property")]
+        property_names = [p.attrib["name"] for p in spec.findall("./property")]
         self.assertTrue(all(hasattr(klass, name) for name in property_names))
 
         with self.assertRaises(DbusClientMissingInterfaceError):
             klass({interface_name + "x": {}})
 
         table = {
-            interface_name:
-            dict((name, random.randint(0, len(property_names)))
-                 for name in property_names)
+            interface_name: dict(
+                (name, random.randint(0, len(property_names)))
+                for name in property_names
+            )
         }
         table_interface = table[interface_name]
         obj = klass(table)
         self.assertTrue(
             all(
                 getattr(obj, name)() == value
-                for (name, value) in table_interface.items()))
+                for (name, value) in table_interface.items()
+            )
+        )
 
         if table_interface != dict():
             remove_name = random.choice([x for x in table_interface])
@@ -77,24 +80,17 @@ class TestCase(unittest.TestCase):
         query = mo_query_builder(spec)
 
         bad = {"bogus": None}
-        with self.assertRaises(DbusClientUnknownSearchPropertiesError) \
-                as context:
+        with self.assertRaises(DbusClientUnknownSearchPropertiesError) as context:
             query(bad)
         exception = context.exception
         self.assertEqual(frozenset(exception.specified), frozenset(bad.keys()))
 
-        properties = [p.attrib['name'] for p in spec.findall("./property")]
-        name = spec.attrib['name']
+        properties = [p.attrib["name"] for p in spec.findall("./property")]
+        name = spec.attrib["name"]
         table = {
-            'junk': {
-                name: dict((k, None) for k in properties)
-            },
-            'other': {
-                "interface": dict()
-            },
-            'nomatch': {
-                name: dict((k, 2) for k in properties)
-            },
+            "junk": {name: dict((k, None) for k in properties)},
+            "other": {"interface": dict()},
+            "nomatch": {name: dict((k, 2) for k in properties)},
         }
 
         query_object = query(dict((k, None) for k in properties))
@@ -113,8 +109,8 @@ class TestCase(unittest.TestCase):
         else:
             self.assertEqual(len(result), 2)
             self.assertEqual(
-                frozenset(x[0] for x in result), frozenset(["junk",
-                                                            "nomatch"]))
+                frozenset(x[0] for x in result), frozenset(["junk", "nomatch"])
+            )
 
             with self.assertRaises(DbusClientUniqueResultError):
                 query_object.require_unique_match().search(table)
