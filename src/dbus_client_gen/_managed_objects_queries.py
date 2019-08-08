@@ -12,7 +12,7 @@ from ._errors import DbusClientUniqueResultError
 from ._errors import DbusClientUnknownSearchPropertiesError
 
 
-class GMOQuery():
+class GMOQuery:
     """
     Class that implements a query on the result of a D-Bus GetManagedObjects()
     call.
@@ -41,18 +41,22 @@ class GMOQuery():
             sub_table = data[interface_name]
 
             try:
-                return all(
-                    sub_table[key] == value for (key, value) in props.items())
+                return all(sub_table[key] == value for (key, value) in props.items())
             except KeyError as err:
-                fmt_str = ("Missing properties in data for some object in "
-                           "interface \"%s\": %s")
+                fmt_str = (
+                    "Missing properties in data for some object in "
+                    'interface "%s": %s'
+                )
                 missing = ", ".join(
-                    str(x) for x in
-                    frozenset(props.keys()) - frozenset(sub_table.keys()))
+                    str(x)
+                    for x in frozenset(props.keys()) - frozenset(sub_table.keys())
+                )
                 raise DbusClientMissingSearchPropertiesError(
-                    fmt_str % (interface_name, missing), interface_name,
+                    fmt_str % (interface_name, missing),
+                    interface_name,
                     [x for x in props.keys()],
-                    [x for x in sub_table.keys()]) from err
+                    [x for x in sub_table.keys()],
+                ) from err
 
         self._interface_name = interface_name
         self._props = props
@@ -75,9 +79,11 @@ class GMOQuery():
 
         :returns: a generator of tuples of objects matched by the search
         """
-        result = ((object_path, data)
-                  for (object_path, data) in gmo_result.items()
-                  if self._filter_func(data))
+        result = (
+            (object_path, data)
+            for (object_path, data) in gmo_result.items()
+            if self._filter_func(data)
+        )
 
         if self._require_unique:
             list_result = [x for x in result]
@@ -85,7 +91,10 @@ class GMOQuery():
                 raise DbusClientUniqueResultError(
                     "No unique match found for interface %s and properties %s, found %s"
                     % (self._interface_name, self._props, list_result),
-                    self._interface_name, self._props, list_result)
+                    self._interface_name,
+                    self._props,
+                    list_result,
+                )
             result = (x for x in list_result)
 
         return result
@@ -102,17 +111,18 @@ def mo_query_builder(spec):
     """
 
     try:
-        interface_name = spec.attrib['name']
+        interface_name = spec.attrib["name"]
     except KeyError as err:  # pragma: no cover
         raise DbusClientGenerationError(
-            "No name attribute found for interface.") from err
+            "No name attribute found for interface."
+        ) from err
 
     try:
-        property_names = frozenset(
-            p.attrib['name'] for p in spec.findall("./property"))
+        property_names = frozenset(p.attrib["name"] for p in spec.findall("./property"))
     except KeyError as err:  # pragma: no cover
-        fmt_str = ("No name attribute found for some property belonging to "
-                   "interface \"%s\"")
+        fmt_str = (
+            "No name attribute found for some property belonging to " 'interface "%s"'
+        )
         raise DbusClientGenerationError(fmt_str % interface_name) from err
 
     def the_func(props=None):
@@ -131,13 +141,17 @@ def mo_query_builder(spec):
         if not frozenset(props.keys()) <= property_names:
             fmt_str = (
                 "These properties in the specified query are unknown to "
-                "interface \"%s\": %s")
+                'interface "%s": %s'
+            )
             unknown_properties = ", ".join(
-                str(x) for x in frozenset(props.keys()) - property_names)
+                str(x) for x in frozenset(props.keys()) - property_names
+            )
             raise DbusClientUnknownSearchPropertiesError(
-                fmt_str % (interface_name, unknown_properties), interface_name,
+                fmt_str % (interface_name, unknown_properties),
+                interface_name,
                 [key for key in props.keys()],
-                [name for name in property_names])
+                [name for name in property_names],
+            )
 
         return GMOQuery(interface_name, props)
 

@@ -134,23 +134,28 @@ def annotation_strategy():
     """
     Build a strategy to generate data for an introspection annotation.
     """
-    return builds(Annotation,
-                  fixed_dictionaries({
-                      'name': _TEXT_STRATEGY,
-                      'value': _TEXT_STRATEGY
-                  }), just(frozenset()))
+    return builds(
+        Annotation,
+        fixed_dictionaries({"name": _TEXT_STRATEGY, "value": _TEXT_STRATEGY}),
+        just(frozenset()),
+    )
 
 
 def arg_strategy():
     """
     Build a strategy to generate data for an introspection arg.
     """
-    return builds(Arg,
-                  fixed_dictionaries({
-                      'name': _TEXT_STRATEGY,
-                      'type': dbus_signatures(),
-                      'direction': sampled_from(["in", "out"])
-                  }), frozensets(annotation_strategy()))
+    return builds(
+        Arg,
+        fixed_dictionaries(
+            {
+                "name": _TEXT_STRATEGY,
+                "type": dbus_signatures(),
+                "direction": sampled_from(["in", "out"]),
+            }
+        ),
+        frozensets(annotation_strategy()),
+    )
 
 
 def interface_strategy(*, min_children=0, max_children=None):
@@ -162,29 +167,33 @@ def interface_strategy(*, min_children=0, max_children=None):
     :param max_children: the maximum number of child elements in this interface
     :type max_children: non-negative int or None
     """
-    return builds(Interface, fixed_dictionaries({
-        'name': _TEXT_STRATEGY,
-    }),
-                  frozensets(
-                      annotation_strategy() | property_strategy()
-                      | method_strategy() | signal_strategy(),
-                      min_size=min_children,
-                      max_size=max_children))
+    return builds(
+        Interface,
+        fixed_dictionaries({"name": _TEXT_STRATEGY}),
+        frozensets(
+            annotation_strategy()
+            | property_strategy()
+            | method_strategy()
+            | signal_strategy(),
+            min_size=min_children,
+            max_size=max_children,
+        ),
+    )
 
 
 def method_strategy():
     """
     Build a strategy to generate data for an introspection method.
     """
-    return builds(Method, fixed_dictionaries({
-        'name': _TEXT_STRATEGY,
-    }), frozensets(annotation_strategy() | arg_strategy()))
+    return builds(
+        Method,
+        fixed_dictionaries({"name": _TEXT_STRATEGY}),
+        frozensets(annotation_strategy() | arg_strategy()),
+    )
 
 
 def _node_function(strat):
-    return builds(Node, fixed_dictionaries({
-        'name': _TEXT_STRATEGY
-    }), frozensets(strat))
+    return builds(Node, fixed_dictionaries({"name": _TEXT_STRATEGY}), frozensets(strat))
 
 
 def node_strategy():
@@ -198,32 +207,36 @@ def property_strategy():
     """
     Build a strategy to generate data for an introspection property.
     """
-    return builds(Property,
-                  fixed_dictionaries({
-                      'name':
-                      _TEXT_STRATEGY,
-                      'type':
-                      dbus_signatures(),
-                      'access':
-                      sampled_from(["read", "write", "readwrite"])
-                  }), frozensets(annotation_strategy()))
+    return builds(
+        Property,
+        fixed_dictionaries(
+            {
+                "name": _TEXT_STRATEGY,
+                "type": dbus_signatures(),
+                "access": sampled_from(["read", "write", "readwrite"]),
+            }
+        ),
+        frozensets(annotation_strategy()),
+    )
 
 
 def signal_arg_strategy():
     """
     Build a strategy to generate data for an introspection arg for signals.
     """
-    return builds(Arg,
-                  fixed_dictionaries({
-                      'name': _TEXT_STRATEGY,
-                      'type': dbus_signatures(),
-                  }), frozensets(annotation_strategy()))
+    return builds(
+        Arg,
+        fixed_dictionaries({"name": _TEXT_STRATEGY, "type": dbus_signatures()}),
+        frozensets(annotation_strategy()),
+    )
 
 
 def signal_strategy():
     """
     Build a strategy to generate data for an introspection signal.
     """
-    return builds(Signal, fixed_dictionaries({
-        'name': _TEXT_STRATEGY
-    }), frozensets(annotation_strategy() | signal_arg_strategy()))
+    return builds(
+        Signal,
+        fixed_dictionaries({"name": _TEXT_STRATEGY}),
+        frozensets(annotation_strategy() | signal_arg_strategy()),
+    )

@@ -37,10 +37,11 @@ def managed_object_builder(spec):
     """
 
     try:
-        interface_name = spec.attrib['name']
+        interface_name = spec.attrib["name"]
     except KeyError as err:  # pragma: no cover
         raise DbusClientGenerationError(
-            "No name attribute found for interface.") from err
+            "No name attribute found for interface."
+        ) from err
 
     def build_property(name):
         """
@@ -62,10 +63,10 @@ def managed_object_builder(spec):
                 # pylint: disable=protected-access
                 return self._table[name]
             except KeyError as err:
-                fmt_str = "No entry found for interface \"%s\" and property \"%s\""
+                fmt_str = 'No entry found for interface "%s" and property "%s"'
                 raise DbusClientMissingPropertyError(
-                    fmt_str % (interface_name,
-                               name), interface_name, name) from err
+                    fmt_str % (interface_name, name), interface_name, name
+                ) from err
 
         return dbus_func
 
@@ -75,15 +76,16 @@ def managed_object_builder(spec):
 
         :param namespace: the class's namespace
         """
-        for prop in spec.findall('./property'):
+        for prop in spec.findall("./property"):
             try:
-                name = prop.attrib['name']
+                name = prop.attrib["name"]
             # Should not fail if introspection data is well formed.
             except KeyError as err:  # pragma: no cover
-                fmt_str = ("No name attribute found for some property "
-                           "belonging to interface \"%s\"")
-                raise DbusClientGenerationError(
-                    fmt_str % interface_name) from err
+                fmt_str = (
+                    "No name attribute found for some property "
+                    'belonging to interface "%s"'
+                )
+                raise DbusClientGenerationError(fmt_str % interface_name) from err
 
             namespace[name] = build_property(name)
 
@@ -94,13 +96,14 @@ def managed_object_builder(spec):
             :raises: DbusClientMissingInterfaceError
             """
             if interface_name not in table:
-                fmt_str = "No data in table for interface \"%s\" found"
-                raise DbusClientMissingInterfaceError(fmt_str % interface_name,
-                                                      interface_name)
+                fmt_str = 'No data in table for interface "%s" found'
+                raise DbusClientMissingInterfaceError(
+                    fmt_str % interface_name, interface_name
+                )
             # pylint: disable=protected-access
             self._table = table[interface_name]
 
-        namespace['__init__'] = __init__
+        namespace["__init__"] = __init__
 
     return builder
 
@@ -129,4 +132,5 @@ def managed_object_class(name, spec):
     :rtype: type
     """
     return types.new_class(
-        name, bases=(object, ), exec_body=managed_object_builder(spec))
+        name, bases=(object,), exec_body=managed_object_builder(spec)
+    )
