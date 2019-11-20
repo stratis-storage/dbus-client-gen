@@ -66,7 +66,7 @@ class TestCase(unittest.TestCase):
         )
 
         if table_interface != dict():
-            remove_name = random.choice([x for x in table_interface])
+            remove_name = random.choice(list(table_interface))
             del table_interface[remove_name]
             with self.assertRaises(DbusClientMissingPropertyError):
                 getattr(obj, remove_name)()

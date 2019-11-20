@@ -54,8 +54,8 @@ class GMOQuery:
                 raise DbusClientMissingSearchPropertiesError(
                     fmt_str % (interface_name, missing),
                     interface_name,
-                    [x for x in props.keys()],
-                    [x for x in sub_table.keys()],
+                    list(props.keys()),
+                    list(sub_table.keys()),
                 ) from err
 
         self._interface_name = interface_name
@@ -86,7 +86,7 @@ class GMOQuery:
         )
 
         if self._require_unique:
-            list_result = [x for x in result]
+            list_result = list(result)
             if len(list_result) != 1:
                 raise DbusClientUniqueResultError(
                     "No unique match found for interface %s and properties %s, found %s"
@@ -149,8 +149,8 @@ def mo_query_builder(spec):
             raise DbusClientUnknownSearchPropertiesError(
                 fmt_str % (interface_name, unknown_properties),
                 interface_name,
-                [key for key in props.keys()],
-                [name for name in property_names],
+                list(props.keys()),
+                list(property_names),
             )
 
         return GMOQuery(interface_name, props)
