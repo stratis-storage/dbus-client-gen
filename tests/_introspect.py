@@ -8,21 +8,23 @@ D-Bus introspection data strategy.
 # D-Bus signatures supply only a valid D-Bus signature, rather than arbitrary
 # CDATA.
 
-from abc import ABC
-from abc import abstractmethod
-
+# isort: STDLIB
 import string
-
 import xml.etree.ElementTree as ET
+from abc import ABC, abstractmethod
 
-from hypothesis.strategies import builds
-from hypothesis.strategies import fixed_dictionaries
-from hypothesis.strategies import frozensets
-from hypothesis.strategies import just
-from hypothesis.strategies import recursive
-from hypothesis.strategies import sampled_from
-from hypothesis.strategies import text
+# isort: THIRDPARTY
+from hypothesis.strategies import (
+    builds,
+    fixed_dictionaries,
+    frozensets,
+    just,
+    recursive,
+    sampled_from,
+    text,
+)
 
+# isort: FIRSTPARTY
 from hs_dbus_signature import dbus_signatures
 
 _TEXT_SET = string.ascii_letters + string.digits + string.punctuation
