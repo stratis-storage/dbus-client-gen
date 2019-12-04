@@ -2,23 +2,23 @@
 Test generation of class for invoking dbus methods.
 """
 
-from os import environ
-from os import sys
+# isort: STDLIB
 import random
 import unittest
+from os import environ, sys
 
-from hypothesis import given
-from hypothesis import settings
-from hypothesis import HealthCheck
+# isort: THIRDPARTY
+from hypothesis import HealthCheck, given, settings
 
-from dbus_client_gen import mo_query_builder
-from dbus_client_gen import managed_object_class
-
-from dbus_client_gen._errors import DbusClientMissingInterfaceError
-from dbus_client_gen._errors import DbusClientMissingPropertyError
-from dbus_client_gen._errors import DbusClientMissingSearchPropertiesError
-from dbus_client_gen._errors import DbusClientUniqueResultError
-from dbus_client_gen._errors import DbusClientUnknownSearchPropertiesError
+# isort: LOCAL
+from dbus_client_gen import managed_object_class, mo_query_builder
+from dbus_client_gen._errors import (
+    DbusClientMissingInterfaceError,
+    DbusClientMissingPropertyError,
+    DbusClientMissingSearchPropertiesError,
+    DbusClientUniqueResultError,
+    DbusClientUnknownSearchPropertiesError,
+)
 
 from ._introspect import interface_strategy
 

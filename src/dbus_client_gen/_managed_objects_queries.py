@@ -6,10 +6,12 @@ Code for generating methods suitable for identifying objects in
 the data structure returned by the GetManagedObjects() method.
 """
 
-from ._errors import DbusClientGenerationError
-from ._errors import DbusClientMissingSearchPropertiesError
-from ._errors import DbusClientUniqueResultError
-from ._errors import DbusClientUnknownSearchPropertiesError
+from ._errors import (
+    DbusClientGenerationError,
+    DbusClientMissingSearchPropertiesError,
+    DbusClientUniqueResultError,
+    DbusClientUnknownSearchPropertiesError,
+)
 
 
 class GMOQuery:

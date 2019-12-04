@@ -6,11 +6,14 @@ Code for generating classes suitable for wrapping a table for an object
 returned by GetManagedObjects().
 """
 
+# isort: STDLIB
 import types
 
-from ._errors import DbusClientGenerationError
-from ._errors import DbusClientMissingInterfaceError
-from ._errors import DbusClientMissingPropertyError
+from ._errors import (
+    DbusClientGenerationError,
+    DbusClientMissingInterfaceError,
+    DbusClientMissingPropertyError,
+)
 
 
 def managed_object_builder(spec):
