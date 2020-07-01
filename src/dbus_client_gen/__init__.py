@@ -5,16 +5,16 @@
 Top-level classes and methods.
 """
 
-from ._errors import DbusClientError
-from ._errors import DbusClientGenerationError
-from ._errors import DbusClientMissingInterfaceError
-from ._errors import DbusClientMissingPropertyError
-from ._errors import DbusClientMissingSearchPropertiesError
-from ._errors import DbusClientRuntimeError
-from ._errors import DbusClientSearchConditionError
-from ._errors import DbusClientUnknownSearchPropertiesError
-from ._errors import DbusClientUniqueResultError
-
+from ._errors import (
+    DbusClientError,
+    DbusClientGenerationError,
+    DbusClientMissingInterfaceError,
+    DbusClientMissingPropertyError,
+    DbusClientMissingSearchPropertiesError,
+    DbusClientRuntimeError,
+    DbusClientSearchConditionError,
+    DbusClientUniqueResultError,
+    DbusClientUnknownSearchPropertiesError,
+)
 from ._managed_objects import managed_object_class
-from ._managed_objects_queries import mo_query_builder
-from ._managed_objects_queries import GMOQuery
+from ._managed_objects_queries import GMOQuery, mo_query_builder
