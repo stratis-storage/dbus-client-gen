@@ -123,7 +123,7 @@ def mo_query_builder(spec):
         property_names = frozenset(p.attrib["name"] for p in spec.findall("./property"))
     except KeyError as err:  # pragma: no cover
         fmt_str = (
-            "No name attribute found for some property belonging to 'interface \"%s\"'"
+            'No name attribute found for some property belonging to interface "%s"'
         )
         raise DbusClientGenerationError(fmt_str % interface_name) from err
 
