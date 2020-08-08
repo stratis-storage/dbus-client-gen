@@ -16,6 +16,7 @@ from abc import ABC, abstractmethod
 # isort: THIRDPARTY
 from hypothesis.strategies import (
     builds,
+    composite,
     fixed_dictionaries,
     frozensets,
     just,
@@ -28,7 +29,7 @@ from hypothesis.strategies import (
 from hs_dbus_signature import dbus_signatures
 
 _TEXT_SET = string.ascii_letters + string.digits + string.punctuation
-_TEXT_STRATEGY = text(_TEXT_SET, min_size=1)
+_TEXT_STRATEGY = text(_TEXT_SET, min_size=1, max_size=10)
 
 
 class XMLElement(ABC):
@@ -165,52 +166,136 @@ def arg_strategy(*, min_children=0, max_children=None):
     )
 
 
-def interface_strategy(*, min_children=0, max_children=None):
+@composite
+def interface_strategy(  # pylint: disable=too-many-locals
+    # pylint: disable=bad-continuation
+    draw,
+    *,
+    min_children=0,
+    max_children=None,
+    min_annotations=0,
+    max_annotations=None,
+    min_methods=0,
+    max_methods=None,
+    min_properties=0,
+    max_properties=None,
+    min_signals=0,
+    max_signals=None,
+):
     """
     Build a strategy to generate data for an introspection interface.
 
-    :param min_children: the minimum number of child elements
+    :param min_children: minimum value for component strategies
     :type min_children: non-negative int
-    :param max_children: the maximum number of child elements
+    :param max_children: maximum value for component strategies
     :type max_children: non-negative int or None
-
-    min_children and max_children are passed to component element strategies.
+    :param min annotations: minimum number of annotations
+    :type max_annotations: non-negative int
+    :param max_annotations: maximum number of annotations
+    :type max_annotations: non-negative int or None
+    :param min methods: minimum number of methods
+    :type max_methods: non-negative int
+    :param max_methods: maximum number of methods
+    :type max_methods: non-negative int or None
+    :param min properties: minimum number of properties
+    :type max_properties: non-negative int
+    :param max_properties: maximum number of properties
+    :type max_properties: non-negative int or None
+    :param min signals: minimum number of signals
+    :type max_signals: non-negative int
+    :param max_signals: maximum number of signals
+    :type max_signals: non-negative int or None
     """
-    return builds(
-        Interface,
-        fixed_dictionaries({"name": _TEXT_STRATEGY}),
+    annotations = draw(
         frozensets(
-            annotation_strategy()
-            | property_strategy(min_children=min_children, max_children=max_children)
-            | method_strategy(min_children=min_children, max_children=max_children)
-            | signal_strategy(min_children=min_children, max_children=max_children),
-            min_size=min_children,
-            max_size=max_children,
-        ),
+            annotation_strategy(), min_size=min_annotations, max_size=max_annotations
+        )
     )
+    methods = draw(
+        frozensets(
+            method_strategy(  # pylint: disable=no-value-for-parameter
+                min_children=min_children,
+                max_children=max_children,
+                min_annotations=min_children,
+                max_annotations=max_children,
+                min_args=min_children,
+                max_args=max_children,
+            ),
+            min_size=min_methods,
+            max_size=max_methods,
+        )
+    )
+    properties = draw(
+        frozensets(
+            property_strategy(min_children=min_children, max_children=max_children),
+            min_size=min_properties,
+            max_size=max_properties,
+        )
+    )
+    signals = draw(
+        frozensets(
+            signal_strategy(  # pylint: disable=no-value-for-parameter
+                min_children=min_children,
+                max_children=max_children,
+                min_annotations=min_children,
+                max_annotations=max_children,
+                min_signal_args=min_children,
+                max_signal_args=max_children,
+            ),
+            min_size=min_signals,
+            max_size=max_signals,
+        )
+    )
+    attrs = draw(fixed_dictionaries({"name": _TEXT_STRATEGY}))
+
+    return Interface(attrs, annotations | methods | properties | signals)
 
 
-def method_strategy(*, min_children=0, max_children=None):
+@composite
+def method_strategy(
+    # pylint: disable=bad-continuation
+    draw,
+    *,
+    min_children=0,
+    max_children=None,
+    min_annotations=0,
+    max_annotations=None,
+    min_args=0,
+    max_args=None,
+):
     """
     Build a strategy to generate data for an introspection method.
 
-    :param min_children: the minimum number of child elements
+    :param min_children: min argument passed to component strategies
     :type min_children: non-negative int
-    :param max_children: the maximum number of child elements
+    :param max_children: max argument passed to component strategies
     :type max_children: non-negative int or None
+    :param min_annotations: the minimum number of annotation elements
+    :type min_annotations: non-negative int
+    :param max_annotations: the maximum number of annotation elements
+    :type max_annotations: non-negative int or None
+    :param min_args: the minimum number of arg elements
+    :type min_args: non-negative int
+    :param max_args: the maximum number of arg elements
+    :type max_args: non-negative int or None
 
     min_children and max_children are passed to component element strategies.
     """
-    return builds(
-        Method,
-        fixed_dictionaries({"name": _TEXT_STRATEGY}),
+    annotations = draw(
         frozensets(
-            annotation_strategy()
-            | arg_strategy(min_children=min_children, max_children=max_children),
-            min_size=min_children,
-            max_size=max_children,
-        ),
+            annotation_strategy(), min_size=min_annotations, max_size=max_annotations
+        )
     )
+    args = draw(
+        frozensets(
+            arg_strategy(min_children=min_children, max_children=max_children),
+            min_size=min_args,
+            max_size=max_args,
+        )
+    )
+    attrs = draw(fixed_dictionaries({"name": _TEXT_STRATEGY}))
+
+    return Method(attrs, annotations | args)
 
 
 def _node_function(strat):
@@ -221,7 +306,11 @@ def node_strategy():
     """
     Build a strategy to generate data for an introspection node.
     """
-    return recursive(interface_strategy(), _node_function)
+    return recursive(
+        # pylint: disable=no-value-for-parameter
+        interface_strategy(),
+        _node_function,
+    )
 
 
 def property_strategy(*, min_children=0, max_children=None):
@@ -262,24 +351,46 @@ def signal_arg_strategy(*, min_children=0, max_children=None):
     )
 
 
-def signal_strategy(*, min_children=0, max_children=None):
+@composite
+def signal_strategy(
+    # pylint: disable=bad-continuation
+    draw,
+    *,
+    min_children=0,
+    max_children=None,
+    min_annotations=0,
+    max_annotations=None,
+    min_signal_args=0,
+    max_signal_args=None,
+):
     """
     Build a strategy to generate data for an introspection signal.
 
-    :param min_children: the minimum number of child elements
+    :param min_children: min argument passed to component strategies
     :type min_children: non-negative int
-    :param max_children: the maximum number of child elements
+    :param max_children: max argument passed to component strategies
     :type max_children: non-negative int or None
-
-    min_children and max_children are passed to component element strategies.
+    :param min_annotations: the minimum number of annotation elements
+    :type min_annotations: non-negative int
+    :param max_annotations: the maximum number of annotation elements
+    :type max_annotations: non-negative int or None
+    :param min_signal_args: the minimum number of signal_arg elements
+    :type min_signal_args: non-negative int
+    :param max_signal_args: the maximum number of signal_arg elements
+    :type max_signal_args: non-negative int or None
     """
-    return builds(
-        Signal,
-        fixed_dictionaries({"name": _TEXT_STRATEGY}),
+    annotations = draw(
         frozensets(
-            annotation_strategy()
-            | signal_arg_strategy(min_children=min_children, max_children=max_children),
-            min_size=min_children,
-            max_size=max_children,
-        ),
+            annotation_strategy(), min_size=min_annotations, max_size=max_annotations
+        )
     )
+    signal_args = draw(
+        frozensets(
+            signal_arg_strategy(min_children=min_children, max_children=max_children),
+            min_size=min_signal_args,
+            max_size=max_signal_args,
+        )
+    )
+    attrs = draw(fixed_dictionaries({"name": _TEXT_STRATEGY}))
+
+    return Signal(attrs, annotations | signal_args)
