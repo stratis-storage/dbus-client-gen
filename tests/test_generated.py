@@ -95,24 +95,20 @@ class TestCase(unittest.TestCase):
 
             properties = [p.attrib["name"] for p in spec.findall("./property")]
 
-            with self.assertRaises(DbusClientUnknownSearchPropertiesError):
-                query_builder(
-                    {"bogus": None}
-                    if properties == []
-                    else dict(((("%s_x" % p), None) for p in properties))
-                )
-
             with self.assertRaises(DbusClientUniqueResultError):
                 query_builder(dict()).require_unique_match().search(dict())
 
-            self.assertEqual(list(query_builder(dict()).search(dict())), [])
+            with self.assertRaises(DbusClientUnknownSearchPropertiesError):
+                query_builder({"".join(properties) + "_": True})
 
             query = query_builder(dict((p, True) for p in properties))
-            filter_func = query._filter_func  # pylint: disable=protected-access
-            self.assertFalse(filter_func(dict()))
-            table = {interface_name: dict()}
             if properties == []:
-                self.assertTrue(filter_func(table))
+                self.assertEqual(
+                    list(query.search({"op": {interface_name: dict()}})),
+                    [("op", {interface_name: dict()})],
+                )
+                self.assertEqual(list(query.search({"op": dict()})), [])
+
             else:
                 with self.assertRaises(DbusClientMissingSearchPropertiesError):
-                    filter_func(table)
+                    list(query.search({"op": {interface_name: dict()}}))
