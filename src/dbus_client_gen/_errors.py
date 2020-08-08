@@ -82,7 +82,7 @@ class DbusClientUnknownSearchPropertiesError(DbusClientRuntimeError):
         self.allowed = allowed
 
 
-class DbusClientMissingPropertyError(DbusClientRuntimeError):  # pragma: no cover
+class DbusClientMissingPropertyError(DbusClientRuntimeError):
     """
     Exception returned when GMO data does not contain the property name.
     """
