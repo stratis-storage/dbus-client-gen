@@ -143,9 +143,14 @@ def annotation_strategy():
     )
 
 
-def arg_strategy():
+def arg_strategy(*, min_children=0, max_children=None):
     """
     Build a strategy to generate data for an introspection arg.
+
+    :param min_children: the minimum number of child elements
+    :type min_children: non-negative int
+    :param max_children: the maximum number of child elements
+    :type max_children: non-negative int or None
     """
     return builds(
         Arg,
@@ -156,7 +161,7 @@ def arg_strategy():
                 "direction": sampled_from(["in", "out"]),
             }
         ),
-        frozensets(annotation_strategy()),
+        frozensets(annotation_strategy(), min_size=min_children, max_size=max_children),
     )
 
 
@@ -164,33 +169,47 @@ def interface_strategy(*, min_children=0, max_children=None):
     """
     Build a strategy to generate data for an introspection interface.
 
-    :param min_children: the minimum number of child elements in this interface
+    :param min_children: the minimum number of child elements
     :type min_children: non-negative int
-    :param max_children: the maximum number of child elements in this interface
+    :param max_children: the maximum number of child elements
     :type max_children: non-negative int or None
+
+    min_children and max_children are passed to component element strategies.
     """
     return builds(
         Interface,
         fixed_dictionaries({"name": _TEXT_STRATEGY}),
         frozensets(
             annotation_strategy()
-            | property_strategy()
-            | method_strategy()
-            | signal_strategy(),
+            | property_strategy(min_children=min_children, max_children=max_children)
+            | method_strategy(min_children=min_children, max_children=max_children)
+            | signal_strategy(min_children=min_children, max_children=max_children),
             min_size=min_children,
             max_size=max_children,
         ),
     )
 
 
-def method_strategy():
+def method_strategy(*, min_children=0, max_children=None):
     """
     Build a strategy to generate data for an introspection method.
+
+    :param min_children: the minimum number of child elements
+    :type min_children: non-negative int
+    :param max_children: the maximum number of child elements
+    :type max_children: non-negative int or None
+
+    min_children and max_children are passed to component element strategies.
     """
     return builds(
         Method,
         fixed_dictionaries({"name": _TEXT_STRATEGY}),
-        frozensets(annotation_strategy() | arg_strategy()),
+        frozensets(
+            annotation_strategy()
+            | arg_strategy(min_children=min_children, max_children=max_children),
+            min_size=min_children,
+            max_size=max_children,
+        ),
     )
 
 
@@ -205,9 +224,14 @@ def node_strategy():
     return recursive(interface_strategy(), _node_function)
 
 
-def property_strategy():
+def property_strategy(*, min_children=0, max_children=None):
     """
     Build a strategy to generate data for an introspection property.
+
+    :param min_children: the minimum number of child elements
+    :type min_children: non-negative int
+    :param max_children: the maximum number of child elements
+    :type max_children: non-negative int or None
     """
     return builds(
         Property,
@@ -218,27 +242,44 @@ def property_strategy():
                 "access": sampled_from(["read", "write", "readwrite"]),
             }
         ),
-        frozensets(annotation_strategy()),
+        frozensets(annotation_strategy(), min_size=min_children, max_size=max_children),
     )
 
 
-def signal_arg_strategy():
+def signal_arg_strategy(*, min_children=0, max_children=None):
     """
     Build a strategy to generate data for an introspection arg for signals.
+
+    :param min_children: the minimum number of child elements
+    :type min_children: non-negative int
+    :param max_children: the maximum number of child elements
+    :type max_children: non-negative int or None
     """
     return builds(
         Arg,
         fixed_dictionaries({"name": _TEXT_STRATEGY, "type": dbus_signatures()}),
-        frozensets(annotation_strategy()),
+        frozensets(annotation_strategy(), min_size=min_children, max_size=max_children),
     )
 
 
-def signal_strategy():
+def signal_strategy(*, min_children=0, max_children=None):
     """
     Build a strategy to generate data for an introspection signal.
+
+    :param min_children: the minimum number of child elements
+    :type min_children: non-negative int
+    :param max_children: the maximum number of child elements
+    :type max_children: non-negative int or None
+
+    min_children and max_children are passed to component element strategies.
     """
     return builds(
         Signal,
         fixed_dictionaries({"name": _TEXT_STRATEGY}),
-        frozensets(annotation_strategy() | signal_arg_strategy()),
+        frozensets(
+            annotation_strategy()
+            | signal_arg_strategy(min_children=min_children, max_children=max_children),
+            min_size=min_children,
+            max_size=max_children,
+        ),
     )
