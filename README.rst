@@ -70,3 +70,11 @@ DbusClientError
         - DbusClientUnknownSearchPropertiesError -- too many fields to list here
           This exception is raised if the search properties specified can not
           be found in the specified interface.
+
+
+Packaging
+---------
+Downstream packagers, if incorporating testing into their packaging, are
+encouraged to use only the tests in the test_deterministic.py module, to
+avoid testing failures that may arise due to the non-deterministic behavior
+of Hypothesis tests.
