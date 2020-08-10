@@ -20,7 +20,6 @@ from hypothesis.strategies import (
     fixed_dictionaries,
     frozensets,
     just,
-    recursive,
     sampled_from,
     text,
 )
@@ -296,21 +295,6 @@ def method_strategy(
     attrs = draw(fixed_dictionaries({"name": _TEXT_STRATEGY}))
 
     return Method(attrs, annotations | args)
-
-
-def _node_function(strat):
-    return builds(Node, fixed_dictionaries({"name": _TEXT_STRATEGY}), frozensets(strat))
-
-
-def node_strategy():
-    """
-    Build a strategy to generate data for an introspection node.
-    """
-    return recursive(
-        # pylint: disable=no-value-for-parameter
-        interface_strategy(),
-        _node_function,
-    )
 
 
 def property_strategy(*, min_children=0, max_children=None):
