@@ -20,7 +20,6 @@ from hypothesis.strategies import (
     fixed_dictionaries,
     frozensets,
     just,
-    recursive,
     sampled_from,
     text,
 )
@@ -144,7 +143,7 @@ def annotation_strategy():
     )
 
 
-def arg_strategy(*, min_children=0, max_children=None):
+def arg_strategy(*, min_children=0, max_children=None, dbus_signature_args=None):
     """
     Build a strategy to generate data for an introspection arg.
 
@@ -152,13 +151,17 @@ def arg_strategy(*, min_children=0, max_children=None):
     :type min_children: non-negative int
     :param max_children: the maximum number of child elements
     :type max_children: non-negative int or None
+    :param dbus_signature_args: to override dbus_signatures defaults
+    :type dbus_signature_args: dict of str * object or NoneType
     """
     return builds(
         Arg,
         fixed_dictionaries(
             {
                 "name": _TEXT_STRATEGY,
-                "type": dbus_signatures(),
+                "type": dbus_signatures(
+                    **({} if dbus_signature_args is None else dbus_signature_args)
+                ),
                 "direction": sampled_from(["in", "out"]),
             }
         ),
@@ -181,6 +184,7 @@ def interface_strategy(  # pylint: disable=too-many-locals
     max_properties=None,
     min_signals=0,
     max_signals=None,
+    dbus_signature_args=None,
 ):
     """
     Build a strategy to generate data for an introspection interface.
@@ -205,6 +209,8 @@ def interface_strategy(  # pylint: disable=too-many-locals
     :type max_signals: non-negative int
     :param max_signals: maximum number of signals
     :type max_signals: non-negative int or None
+    :param dbus_signature_args: to override dbus_signatures defaults
+    :type dbus_signature_args: dict of str * object or NoneType
     """
     annotations = draw(
         frozensets(
@@ -220,6 +226,7 @@ def interface_strategy(  # pylint: disable=too-many-locals
                 max_annotations=max_children,
                 min_args=min_children,
                 max_args=max_children,
+                dbus_signature_args=dbus_signature_args,
             ),
             min_size=min_methods,
             max_size=max_methods,
@@ -227,7 +234,11 @@ def interface_strategy(  # pylint: disable=too-many-locals
     )
     properties = draw(
         frozensets(
-            property_strategy(min_children=min_children, max_children=max_children),
+            property_strategy(
+                min_children=min_children,
+                max_children=max_children,
+                dbus_signature_args=dbus_signature_args,
+            ),
             min_size=min_properties,
             max_size=max_properties,
         )
@@ -241,6 +252,7 @@ def interface_strategy(  # pylint: disable=too-many-locals
                 max_annotations=max_children,
                 min_signal_args=min_children,
                 max_signal_args=max_children,
+                dbus_signature_args=dbus_signature_args,
             ),
             min_size=min_signals,
             max_size=max_signals,
@@ -262,6 +274,7 @@ def method_strategy(
     max_annotations=None,
     min_args=0,
     max_args=None,
+    dbus_signature_args=None,
 ):
     """
     Build a strategy to generate data for an introspection method.
@@ -278,6 +291,8 @@ def method_strategy(
     :type min_args: non-negative int
     :param max_args: the maximum number of arg elements
     :type max_args: non-negative int or None
+    :param dbus_signature_args: to override dbus_signatures defaults
+    :type dbus_signature_args: dict of str * object or NoneType
 
     min_children and max_children are passed to component element strategies.
     """
@@ -288,7 +303,11 @@ def method_strategy(
     )
     args = draw(
         frozensets(
-            arg_strategy(min_children=min_children, max_children=max_children),
+            arg_strategy(
+                min_children=min_children,
+                max_children=max_children,
+                dbus_signature_args=dbus_signature_args,
+            ),
             min_size=min_args,
             max_size=max_args,
         )
@@ -298,22 +317,7 @@ def method_strategy(
     return Method(attrs, annotations | args)
 
 
-def _node_function(strat):
-    return builds(Node, fixed_dictionaries({"name": _TEXT_STRATEGY}), frozensets(strat))
-
-
-def node_strategy():
-    """
-    Build a strategy to generate data for an introspection node.
-    """
-    return recursive(
-        # pylint: disable=no-value-for-parameter
-        interface_strategy(),
-        _node_function,
-    )
-
-
-def property_strategy(*, min_children=0, max_children=None):
+def property_strategy(*, min_children=0, max_children=None, dbus_signature_args=None):
     """
     Build a strategy to generate data for an introspection property.
 
@@ -321,13 +325,17 @@ def property_strategy(*, min_children=0, max_children=None):
     :type min_children: non-negative int
     :param max_children: the maximum number of child elements
     :type max_children: non-negative int or None
+    :param dbus_signature_args: to override dbus_signatures defaults
+    :type dbus_signature_args: dict of str * object or NoneType
     """
     return builds(
         Property,
         fixed_dictionaries(
             {
                 "name": _TEXT_STRATEGY,
-                "type": dbus_signatures(),
+                "type": dbus_signatures(
+                    **({} if dbus_signature_args is None else dbus_signature_args)
+                ),
                 "access": sampled_from(["read", "write", "readwrite"]),
             }
         ),
@@ -335,7 +343,7 @@ def property_strategy(*, min_children=0, max_children=None):
     )
 
 
-def signal_arg_strategy(*, min_children=0, max_children=None):
+def signal_arg_strategy(*, min_children=0, max_children=None, dbus_signature_args=None):
     """
     Build a strategy to generate data for an introspection arg for signals.
 
@@ -343,10 +351,19 @@ def signal_arg_strategy(*, min_children=0, max_children=None):
     :type min_children: non-negative int
     :param max_children: the maximum number of child elements
     :type max_children: non-negative int or None
+    :param dbus_signature_args: to override dbus_signatures defaults
+    :type dbus_signature_args: dict of str * object or NoneType
     """
     return builds(
         Arg,
-        fixed_dictionaries({"name": _TEXT_STRATEGY, "type": dbus_signatures()}),
+        fixed_dictionaries(
+            {
+                "name": _TEXT_STRATEGY,
+                "type": dbus_signatures(
+                    **({} if dbus_signature_args is None else dbus_signature_args)
+                ),
+            }
+        ),
         frozensets(annotation_strategy(), min_size=min_children, max_size=max_children),
     )
 
@@ -362,6 +379,7 @@ def signal_strategy(
     max_annotations=None,
     min_signal_args=0,
     max_signal_args=None,
+    dbus_signature_args=None,
 ):
     """
     Build a strategy to generate data for an introspection signal.
@@ -378,6 +396,8 @@ def signal_strategy(
     :type min_signal_args: non-negative int
     :param max_signal_args: the maximum number of signal_arg elements
     :type max_signal_args: non-negative int or None
+    :param dbus_signature_args: to override dbus_signatures defaults
+    :type dbus_signature_args: dict of str * object or NoneType
     """
     annotations = draw(
         frozensets(
@@ -386,7 +406,11 @@ def signal_strategy(
     )
     signal_args = draw(
         frozensets(
-            signal_arg_strategy(min_children=min_children, max_children=max_children),
+            signal_arg_strategy(
+                min_children=min_children,
+                max_children=max_children,
+                dbus_signature_args=dbus_signature_args,
+            ),
             min_size=min_signal_args,
             max_size=max_signal_args,
         )
