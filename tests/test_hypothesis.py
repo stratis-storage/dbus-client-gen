@@ -41,6 +41,11 @@ class TestCase(unittest.TestCase):
             min_properties=1,
             max_properties=3,
             max_signals=1,
+            dbus_signature_args={
+                "max_codes": 3,
+                "max_complete_types": 3,
+                "max_struct_len": 3,
+            },
         ).map(lambda x: x.element())
     )
     @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
@@ -72,7 +77,15 @@ class TestCase(unittest.TestCase):
         # pylint: disable=no-value-for-parameter
         tuples(
             interface_strategy(
-                max_children=3, max_properties=0, max_methods=1, max_signals=1
+                max_children=3,
+                max_properties=0,
+                max_methods=1,
+                max_signals=1,
+                dbus_signature_args={
+                    "max_codes": 3,
+                    "max_complete_types": 3,
+                    "max_struct_len": 3,
+                },
             ).map(lambda x: x.element()),
             interface_strategy(
                 max_children=3,
@@ -80,6 +93,11 @@ class TestCase(unittest.TestCase):
                 max_properties=3,
                 max_methods=1,
                 max_signals=1,
+                dbus_signature_args={
+                    "max_codes": 3,
+                    "max_complete_types": 3,
+                    "max_struct_len": 3,
+                },
             ).map(lambda x: x.element()),
         )
     )
