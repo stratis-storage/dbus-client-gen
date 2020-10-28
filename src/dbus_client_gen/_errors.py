@@ -30,7 +30,7 @@ class DbusClientRuntimeError(DbusClientError):
         :param str message: the error message
         :param str interface_name: the interface name
         """
-        super(DbusClientRuntimeError, self).__init__(message)
+        super().__init__(message)
         self.interface_name = interface_name
 
 
@@ -51,9 +51,7 @@ class DbusClientMissingSearchPropertiesError(DbusClientRuntimeError):
         :param data_keys: the keys actually available in the data
         :type data_keys: list of str
         """
-        super(DbusClientMissingSearchPropertiesError, self).__init__(
-            message, interface_name
-        )
+        super().__init__(message, interface_name)
         self.query_keys = query_keys
         self.data_keys = data_keys
 
@@ -75,9 +73,7 @@ class DbusClientUnknownSearchPropertiesError(DbusClientRuntimeError):
         :param allowed: the allowed keys
         :type allowed: list of str
         """
-        super(DbusClientUnknownSearchPropertiesError, self).__init__(
-            message, interface_name
-        )
+        super().__init__(message, interface_name)
         self.specified = specified
         self.allowed = allowed
 
@@ -95,7 +91,7 @@ class DbusClientMissingPropertyError(DbusClientRuntimeError):
         :param str interface_name: the interface name
         :param str property_name: the name of the property to look up
         """
-        super(DbusClientMissingPropertyError, self).__init__(message, interface_name)
+        super().__init__(message, interface_name)
         self.property_name = property_name
 
 
@@ -114,7 +110,7 @@ class DbusClientMissingInterfaceError(DbusClientRuntimeError):
         # Note that if this is not disabled, pylint complains about
         # super-init-not-called instead.
         # pylint: disable=useless-super-delegation
-        super(DbusClientMissingInterfaceError, self).__init__(message, interface_name)
+        super().__init__(message, interface_name)
 
 
 class DbusClientSearchConditionError(DbusClientRuntimeError):
@@ -133,7 +129,7 @@ class DbusClientSearchConditionError(DbusClientRuntimeError):
         # Note that if this is not disabled, pylint complains about
         # super-init-not-called instead.
         # pylint: disable=useless-super-delegation
-        super(DbusClientSearchConditionError, self).__init__(message, interface_name)
+        super().__init__(message, interface_name)
 
 
 class DbusClientUniqueResultError(DbusClientSearchConditionError):
@@ -150,6 +146,6 @@ class DbusClientUniqueResultError(DbusClientSearchConditionError):
         :param dict props: the list of properties for this interface to match
         :param list result: the list of objects found via the search string
         """
-        super(DbusClientUniqueResultError, self).__init__(message, interface_name)
+        super().__init__(message, interface_name)
         self.props = props
         self.result = result
