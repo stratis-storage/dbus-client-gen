@@ -1,0 +1,31 @@
+into-dbus-python 0.5 (UNRELEASED)
+=================================
+
+Recommended Python interpreter: 3.7.9
+Recommended tox version: 3.13.2
+Python auto-formatter: black (19.10b0)
+Python import sorter: isort (4.3.21)
+YAML linter: yamllint (1.23.0)
+
+
+- Split tests into two kinds, deterministic and Hypothesis-based:
+  https://github.com/stratis-storage/into-dbus-python/pull/42
+
+- Tidies and Maintenance:
+  https://github.com/stratis-storage/into-dbus-python/pull/49
+  https://github.com/stratis-storage/into-dbus-python/pull/48
+  https://github.com/stratis-storage/into-dbus-python/pull/46
+  https://github.com/stratis-storage/into-dbus-python/pull/45
+  https://github.com/stratis-storage/into-dbus-python/pull/44
+  https://github.com/stratis-storage/into-dbus-python/pull/43
+  https://github.com/stratis-storage/into-dbus-python/pull/41
+  https://github.com/stratis-storage/into-dbus-python/pull/40
+  https://github.com/stratis-storage/into-dbus-python/pull/39
+  https://github.com/stratis-storage/into-dbus-python/pull/35
+  https://github.com/stratis-storage/into-dbus-python/pull/34
+  https://github.com/stratis-storage/into-dbus-python/pull/33
+  https://github.com/stratis-storage/into-dbus-python/pull/32
+  https://github.com/stratis-storage/into-dbus-python/pull/31
+  https://github.com/stratis-storage/into-dbus-python/pull/30
+  https://github.com/stratis-storage/into-dbus-python/pull/29
+  https://github.com/stratis-storage/into-dbus-python/pull/28
