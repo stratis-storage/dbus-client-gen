@@ -4,7 +4,7 @@ Hypothesis-based tests of class generation code.
 
 # isort: STDLIB
 import unittest
-from os import environ, sys
+from os import sys
 
 # isort: THIRDPARTY
 from hypothesis import HealthCheck, given, settings
@@ -23,7 +23,7 @@ from dbus_client_gen._errors import (
 from ._introspect import interface_strategy
 
 settings.register_profile("tracing", deadline=None)
-if sys.gettrace() is not None or environ.get("TRAVIS") is not None:
+if sys.gettrace() is not None:
     settings.load_profile("tracing")
 
 
