@@ -20,7 +20,8 @@ from dbus_client_gen._errors import (
     DbusClientUnknownSearchPropertiesError,
 )
 
-from ._introspect import interface_strategy
+# isort considers this third party, but it is not
+from tests._introspect import interface_strategy  # isort:skip
 
 settings.register_profile("tracing", deadline=None)
 if sys.gettrace() is not None:
