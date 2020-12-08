@@ -1,5 +1,5 @@
-into-dbus-python 0.5 (UNRELEASED)
-=================================
+into-dbus-python 0.5
+====================
 
 Recommended Python interpreter: 3.7.9
 Recommended tox version: 3.13.2
