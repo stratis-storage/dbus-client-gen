@@ -16,10 +16,11 @@ def local_file(name):
     return os.path.relpath(os.path.join(os.path.dirname(__file__), name))
 
 
-README = local_file("README.rst")
-
 with open(local_file("src/dbus_client_gen/_version.py")) as o:
     exec(o.read())  # pylint: disable=exec-used
+
+with open(local_file("README.rst"), encoding="utf-8") as o:
+    long_description = o.read()
 
 setuptools.setup(
     name="dbus-client-gen",
@@ -27,7 +28,7 @@ setuptools.setup(
     author="Anne Mulhern",
     author_email="amulhern@redhat.com",
     description="generates classes and methods useful to a D-Bus client",
-    long_description=open(README, encoding="utf-8").read(),
+    long_description=long_description,
     platforms=["Linux"],
     license="MPL 2.0",
     classifiers=[
