@@ -140,7 +140,7 @@ def mo_query_builder(spec):
         :rtype: GMOQuery
 
         """
-        props = dict() if props is None else props
+        props = {} if props is None else props
 
         if not frozenset(props.keys()) <= property_names:
             fmt_str = (

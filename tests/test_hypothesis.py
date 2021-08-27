@@ -62,9 +62,9 @@ class TestCase(unittest.TestCase):
         self.assertTrue(all(hasattr(klass, name) for name in property_names))
 
         with self.assertRaises(DbusClientMissingInterfaceError):
-            obj = klass(dict())
+            obj = klass({})
 
-        obj = klass({interface_name: dict()})
+        obj = klass({interface_name: {}})
         for name in property_names:
             with self.assertRaises(DbusClientMissingPropertyError):
                 getattr(obj, name)()
@@ -115,7 +115,7 @@ class TestCase(unittest.TestCase):
             properties = [p.attrib["name"] for p in spec.findall("./property")]
 
             with self.assertRaises(DbusClientUniqueResultError):
-                query_builder(dict()).require_unique_match().search(dict())
+                query_builder({}).require_unique_match().search({})
 
             with self.assertRaises(DbusClientUnknownSearchPropertiesError):
                 query_builder({"".join(properties) + "_": True})
@@ -123,11 +123,11 @@ class TestCase(unittest.TestCase):
             query = query_builder(dict((p, True) for p in properties))
             if properties == []:
                 self.assertEqual(
-                    list(query.search({"op": {interface_name: dict()}})),
-                    [("op", {interface_name: dict()})],
+                    list(query.search({"op": {interface_name: {}}})),
+                    [("op", {interface_name: {}})],
                 )
-                self.assertEqual(list(query.search({"op": dict()})), [])
+                self.assertEqual(list(query.search({"op": {}})), [])
 
             else:
                 with self.assertRaises(DbusClientMissingSearchPropertiesError):
-                    list(query.search({"op": {interface_name: dict()}}))
+                    list(query.search({"op": {interface_name: {}}}))
