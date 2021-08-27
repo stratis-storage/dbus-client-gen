@@ -25,5 +25,5 @@ jobs:
           dnf install -y
           make
           ${{ matrix.dependencies }}
-      - name: make -f Makefile $${ matrix.task }}
+      - name: make -f Makefile ${{ matrix.task }}
         run: make -f Makefile ${{ matrix.task }}
