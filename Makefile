@@ -2,7 +2,9 @@ TOX=tox
 
 .PHONY: lint
 lint:
-	$(TOX) -c tox.ini -e lint
+	pylint setup.py
+	pylint src/dbus_client_gen --disable=duplicate-code
+	pylint tests
 
 .PHONY: coverage
 coverage:
