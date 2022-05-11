@@ -91,8 +91,9 @@ class GMOQuery:
             list_result = list(result)
             if len(list_result) != 1:
                 raise DbusClientUniqueResultError(
-                    "No unique match found for interface %s and properties %s, found %s"
-                    % (self._interface_name, self._props, list_result),
+                    f"No unique match found for interface "
+                    f"{self._interface_name} and properties {self._props}, "
+                    f"found {list_result}",
                     self._interface_name,
                     self._props,
                     list_result,
