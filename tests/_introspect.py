@@ -58,7 +58,8 @@ class XMLElement(ABC):
         return elt
 
     @abstractmethod
-    def name(self):
+    @classmethod
+    def name(cls):
         """
         Method which returns the tag for this class.
         """
@@ -69,7 +70,8 @@ class Annotation(XMLElement):
     Class representing an annotation in the introspect dtd.
     """
 
-    def name(self):
+    @classmethod
+    def name(cls):
         return "annotation"
 
 
@@ -108,7 +110,8 @@ class Node(XMLElement):
     Class representing a node in the introspect dtd.
     """
 
-    def name(self):
+    @classmethod
+    def name(cls):
         return "node"
 
 
