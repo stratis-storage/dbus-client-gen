@@ -57,8 +57,8 @@ class XMLElement(ABC):
         elt.extend(child.element() for child in self.children)
         return elt
 
-    @abstractmethod
     @classmethod
+    @abstractmethod
     def name(cls):
         """
         Method which returns the tag for this class.
