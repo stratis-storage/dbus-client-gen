@@ -33,10 +33,10 @@ view:
 	mv classes_dbus-client-gen.pdf _pyreverse
 	mv packages_dbus-client-gen.pdf _pyreverse
 
-.PHONY: upload-release
-upload-release:
-	python setup.py register sdist upload
-
 .PHONY: yamllint
 yamllint:
 	yamllint --strict .github/workflows/main.yml
+
+.PHONY: package
+package:
+	(umask 0022; python -m build; python -m twine check --strict ./dist/*)
