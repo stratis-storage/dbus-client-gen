@@ -18,6 +18,8 @@ jobs:
             task: make -f Makefile yamllint
           - dependencies: pylint
             task: PYTHONPATH=./src make -f Makefile lint
+          - dependencies: python python3-build twine
+            task: make -f Makefile package
     runs-on: ubuntu-latest
     container: fedora:37  # NEXT DEVELOPMENT ENVIRONMENT
     steps:
