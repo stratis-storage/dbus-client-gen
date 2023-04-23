@@ -7,6 +7,12 @@ on:
     - cron: 20 4 * * 1
   workflow_dispatch:
 
+
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
 jobs:
   next-fedora-python-checks:
     strategy:
