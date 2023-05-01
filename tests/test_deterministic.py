@@ -12,7 +12,10 @@ import xml.etree.ElementTree as ET
 
 # isort: LOCAL
 from dbus_client_gen import GMOQuery, managed_object_class, mo_query_builder
-from dbus_client_gen._errors import DbusClientGenerationError
+from dbus_client_gen._errors import (
+    DbusClientGenerationError,
+    DbusClientUniqueResultError,
+)
 
 
 class DeterministicTestCase(unittest.TestCase):
@@ -45,3 +48,12 @@ class DeterministicTestCase(unittest.TestCase):
         self.assertEqual(len(search_result), 1)
 
         self.assertEqual(search_result[0], test_item)
+
+    def test_unique_match_failure(self):
+        """
+        Fail to get the unique match because no match criterion provided.
+        """
+        with self.assertRaises(DbusClientUniqueResultError):
+            GMOQuery(
+                "interface_name", {"prop_name": "prop_value"}
+            ).require_unique_match().search({})
