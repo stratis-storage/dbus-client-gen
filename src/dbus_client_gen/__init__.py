@@ -18,3 +18,4 @@ from ._errors import (
 )
 from ._managed_objects import managed_object_class
 from ._managed_objects_queries import GMOQuery, mo_query_builder
+from ._version import __version__
