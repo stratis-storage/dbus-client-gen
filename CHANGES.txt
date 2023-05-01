@@ -3,6 +3,10 @@ into-dbus-python 0.5.1
 Recommended development environment: Fedora 37
 
 - Tidies and Maintenance:
+  https://github.com/stratis-storage/into-dbus-python/pull/83
+  https://github.com/stratis-storage/into-dbus-python/pull/81
+  https://github.com/stratis-storage/into-dbus-python/pull/80
+  https://github.com/stratis-storage/into-dbus-python/pull/79
   https://github.com/stratis-storage/into-dbus-python/pull/78
   https://github.com/stratis-storage/into-dbus-python/pull/77
   https://github.com/stratis-storage/into-dbus-python/pull/76
