@@ -41,6 +41,7 @@ jobs:
           dnf install -y
           make
           pip
+          python
           ${{ matrix.dependencies }}
       - name: Where is userlib?
         run: >
