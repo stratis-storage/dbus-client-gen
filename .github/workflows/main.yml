@@ -22,15 +22,15 @@ jobs:
             task: make -f Makefile yamllint
           - dependencies: pylint python3-hypothesis
             task: >
-              PYTHONPATH=./src:../usr/local/lib/python3.11/site-packages
+              PYTHONPATH=./src
               make -f Makefile lint
           - dependencies: python3-hypothesis
             task: >
-              PYTHONPATH=./src:../usr/local/lib/python3.11/site-packages
+              PYTHONPATH=./src
               make -f Makefile test
           - dependencies: python3-coverage python3-hypothesis
             task: >
-              PYTHONPATH=./src:../usr/local/lib/python3.11/site-packages
+              PYTHONPATH=./src
               make -f Makefile coverage
     runs-on: ubuntu-latest
     container: fedora:38  # CURRENT DEVELOPMENT ENVIRONMENT
@@ -48,7 +48,7 @@ jobs:
           python -c
           'import sysconfig; print(sysconfig.get_config_var("userbase"))'
       - name: Install hs-dbus-signature
-        run: pip install --root=.. hs-dbus-signature
+        run: pip install --user hs-dbus-signature
       - name: ${{ matrix.task }}
         run: ${{ matrix.task }}
 
