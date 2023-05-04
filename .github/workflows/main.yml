@@ -42,6 +42,10 @@ jobs:
           make
           pip
           ${{ matrix.dependencies }}
+      - name: Where is userlib?
+        run: >
+          python -c
+          'import sysconfig; print(sysconfig.get_config_var("userbase"))'
       - name: Install hs-dbus-signature
         run: pip install --root=.. hs-dbus-signature
       - name: ${{ matrix.task }}
