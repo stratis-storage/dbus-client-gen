@@ -18,7 +18,7 @@ jobs:
             task: make -f Makefile yamllint
           - dependencies: pylint python-hypothesis
             task: >
-              PYTHONPATH=./src:/github/home/.local/lib/python3.11/site-packages
+              PYTHONPATH=./src:/github/home/.local/lib/python3.12/site-packages
               make -f Makefile lint
           - dependencies: python python3-build twine
             task: make -f Makefile package
