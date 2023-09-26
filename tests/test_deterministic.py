@@ -36,7 +36,7 @@ class DeterministicTestCase(unittest.TestCase):
 
     def test_unique_match(self):
         """
-        Test succesful unique match.
+        Test successful unique match.
         """
         query = GMOQuery(
             "interface_name", {"prop_name": "prop_value"}

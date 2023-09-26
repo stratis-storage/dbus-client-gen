@@ -95,7 +95,7 @@ def managed_object_builder(spec):
 
         def __init__(self, table):
             """
-            The initalizer for this class.
+            The initializer for this class.
 
             :raises: DbusClientMissingInterfaceError
             """
