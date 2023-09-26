@@ -36,9 +36,9 @@ This library exports the exception type  DbusClientError and all its subtypes.
 It constitutes a bug if an error of any other type is propagated during class
 generation or when the methods of the class are executed.
 
-The following shows the error heirarchy. Entries after the dash indicate
+The following shows the error hierarchy. Entries after the dash indicate
 additional fields beyond the message which the exception contains. Only leaves
-of the error class heirarchy are constructed directly.
+of the error class hierarchy are constructed directly.
 
 
 DbusClientError
