@@ -173,7 +173,7 @@ def arg_strategy(*, min_children=0, max_children=None, dbus_signature_args=None)
 
 
 @composite
-def interface_strategy(  # pylint: disable=too-many-locals
+def interface_strategy(  # pylint: disable=too-many-locals, too-many-arguments
     draw,
     *,
     min_children=0,
@@ -266,7 +266,7 @@ def interface_strategy(  # pylint: disable=too-many-locals
 
 
 @composite
-def method_strategy(
+def method_strategy(  # pylint: disable=too-many-arguments
     draw,
     *,
     min_children=0,
@@ -370,7 +370,7 @@ def signal_arg_strategy(*, min_children=0, max_children=None, dbus_signature_arg
 
 
 @composite
-def signal_strategy(
+def signal_strategy(  # pylint: disable=too-many-arguments
     draw,
     *,
     min_children=0,
