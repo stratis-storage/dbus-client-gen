@@ -54,7 +54,7 @@ jobs:
           - dependencies: python3-setuptools
             task: make legacy-package
     runs-on: ubuntu-latest
-    container: fedora:34  # LOWEST DEVELOPMENT ENVIRONMENT
+    container: fedora:35  # LOWEST DEVELOPMENT ENVIRONMENT
     steps:
       - name: Display Python version
         run: python3 --version
