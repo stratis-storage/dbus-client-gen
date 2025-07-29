@@ -10,3 +10,6 @@ build
 dist
 htmlcov
 _pyreverse
+
+# monkeytype
+monkeytype.sqlite3
