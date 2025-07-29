@@ -11,6 +11,7 @@ lint:
 	pylint setup.py
 	pylint src/dbus_client_gen --disable=duplicate-code
 	pylint tests
+	pyright
 
 .PHONY: test
 test:
