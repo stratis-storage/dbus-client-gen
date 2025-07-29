@@ -8,6 +8,8 @@ returned by GetManagedObjects().
 
 # isort: STDLIB
 import types
+from typing import Callable
+from xml.etree.ElementTree import Element
 
 from ._errors import (
     DbusClientGenerationError,
@@ -16,7 +18,7 @@ from ._errors import (
 )
 
 
-def managed_object_builder(spec):
+def managed_object_builder(spec: Element) -> Callable:
     """
     Returns a function that builds a method interface based on 'spec'.
     This method interface is a simple one to return the values of
@@ -112,7 +114,7 @@ def managed_object_builder(spec):
     return builder
 
 
-def managed_object_class(name, spec):
+def managed_object_class(name: str, spec: Element):
     """
     Returns a class with an __init__ function which takes one
     argument, a table which is a portion of the tree returned by
