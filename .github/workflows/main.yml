@@ -23,7 +23,7 @@ jobs:
           - dependencies: bandit pylint python3-hypothesis python3-setuptools
             task: >
               PATH=${PATH}:/github/home/.local/bin
-              PYTHONPATH=./src:/github/home/.local/lib/python3.12/site-packages
+              PYTHONPATH=./src:/github/home/.local/lib/python3.13/site-packages
               make -f Makefile lint
           - dependencies: python3-hypothesis python3-setuptools
             task: PYTHONPATH=./src make -f Makefile test
