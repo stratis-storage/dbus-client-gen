@@ -11,6 +11,9 @@ lint:
 	pylint setup.py
 	pylint src/dbus_client_gen --disable=duplicate-code
 	pylint tests
+	bandit setup.py
+	bandit --recursive ./src
+	bandit --recursive ./tests
 	pyright
 
 .PHONY: test

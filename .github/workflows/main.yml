@@ -20,7 +20,7 @@ jobs:
             task: make -f Makefile fmt-travis
           - dependencies: yamllint
             task: make -f Makefile yamllint
-          - dependencies: pylint python3-hypothesis python3-setuptools
+          - dependencies: bandit pylint python3-hypothesis python3-setuptools
             task: >
               PATH=${PATH}:/github/home/.local/bin
               PYTHONPATH=./src:/github/home/.local/lib/python3.12/site-packages

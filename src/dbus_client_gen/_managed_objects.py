@@ -9,7 +9,7 @@ returned by GetManagedObjects().
 # isort: STDLIB
 import types
 from typing import Callable
-from xml.etree.ElementTree import Element
+from xml.etree.ElementTree import Element  # nosec B405
 
 from ._errors import (
     DbusClientGenerationError,

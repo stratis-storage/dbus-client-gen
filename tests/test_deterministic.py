@@ -8,7 +8,7 @@ Deterministic testing of method generation and execution.
 
 # isort: STDLIB
 import unittest
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ET  # nosec B405
 
 # isort: LOCAL
 from dbus_client_gen import GMOQuery, managed_object_class, mo_query_builder
