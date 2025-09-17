@@ -1,3 +1,33 @@
+dbus-client-gen 0.5.2
+======================
+Recommended development environment: Fedora 41
+
+- Remove license classifier deprecated by PEP 639:
+  https://github.com/stratis-storage/into-dbus-python/pull/110
+
+- Tidies and Maintenance:
+  https://github.com/stratis-storage/into-dbus-python/pull/113
+  https://github.com/stratis-storage/into-dbus-python/pull/112
+  https://github.com/stratis-storage/into-dbus-python/pull/111
+  https://github.com/stratis-storage/into-dbus-python/pull/109
+  https://github.com/stratis-storage/into-dbus-python/pull/107
+  https://github.com/stratis-storage/into-dbus-python/pull/106
+  https://github.com/stratis-storage/into-dbus-python/pull/104
+  https://github.com/stratis-storage/into-dbus-python/pull/103
+  https://github.com/stratis-storage/into-dbus-python/pull/102
+  https://github.com/stratis-storage/into-dbus-python/pull/101
+  https://github.com/stratis-storage/into-dbus-python/pull/100
+  https://github.com/stratis-storage/into-dbus-python/pull/99
+  https://github.com/stratis-storage/into-dbus-python/pull/98
+  https://github.com/stratis-storage/into-dbus-python/pull/97
+  https://github.com/stratis-storage/into-dbus-python/pull/96
+  https://github.com/stratis-storage/into-dbus-python/pull/95
+  https://github.com/stratis-storage/into-dbus-python/pull/94
+  https://github.com/stratis-storage/into-dbus-python/pull/92
+  https://github.com/stratis-storage/into-dbus-python/pull/91
+  https://github.com/stratis-storage/into-dbus-python/pull/90
+
+
 dbus-client-gen 0.5.1
 =====================
 Recommended development environment: Fedora 38
