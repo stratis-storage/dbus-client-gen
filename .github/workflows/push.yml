@@ -31,7 +31,7 @@ jobs:
           python3-isort
       - name: Install hs-dbus-signature
         run: pip install --user hs-dbus-signature
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           path: dbus-client-gen
           persist-credentials: false
