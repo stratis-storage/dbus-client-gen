@@ -6,6 +6,10 @@ Code for generating methods suitable for identifying objects in
 the data structure returned by the GetManagedObjects() method.
 """
 
+# isort: STDLIB
+import xml.etree.ElementTree as ET  # nosec B405
+from typing import Any, Callable, Generator, Mapping, Optional, Tuple
+
 from ._errors import (
     DbusClientGenerationError,
     DbusClientMissingSearchPropertiesError,
@@ -20,7 +24,7 @@ class GMOQuery:
     call.
     """
 
-    def __init__(self, interface_name, props):
+    def __init__(self, interface_name: str, props: Mapping[str, Any]):
         """
         Initialize the query with its function, which is run on a single
         entry in the GetManagedObjects result. The function is generated from
@@ -30,7 +34,7 @@ class GMOQuery:
         :param dict props: properties of the interface on which to match
         """
 
-        def filter_func(data):
+        def filter_func(data: Mapping[str, Mapping[str, Any]]) -> bool:
             """
             Returns true if an item should be kept, false otherwise.
 
@@ -65,15 +69,17 @@ class GMOQuery:
         self._filter_func = filter_func
         self._require_unique = False
 
-    def require_unique_match(self, value=True):
+    def require_unique_match(self, value: Optional[bool] = True):
         """
-        If value is True or None, the search requires the result to be unique,
-        i.e. there must be exactly one match.
+        If value is True, or no value is specified, the search requires
+        the result to be unique, i.e. there must be exactly one match.
         """
         self._require_unique = value
         return self
 
-    def search(self, gmo_result):
+    def search(
+        self, gmo_result: Mapping[Any, Mapping[str, Mapping[str, Any]]]
+    ) -> Generator[Tuple[Any, Mapping[str, Mapping[str, Any]]]]:
         """
         Search a GetManagedObjects() result, generating any matches.
 
@@ -103,7 +109,9 @@ class GMOQuery:
         return result
 
 
-def mo_query_builder(spec):
+def mo_query_builder(
+    spec: ET.Element,
+) -> Callable[[Optional[Mapping[str, Any]]], GMOQuery]:
     """
     Returns a function that builds a GMOQuery object for an interface.
 
@@ -130,13 +138,13 @@ def mo_query_builder(spec):
         )
         raise DbusClientGenerationError(fmt_str % interface_name) from err
 
-    def the_func(props=None):
+    def the_func(props: Optional[Mapping[str, Any]] = None) -> GMOQuery:
         """
         Takes a list of key/value pairs representing properties
         and generates a GMOQuery object which implements the requested search.
 
         :param props: a specification of properties to restrict values
-        :type props: dict of str * object or NoneType
+        :type props: Mapping of str * object or NoneType
         :returns: an appropriately constructed GMOQuery object
         :rtype: GMOQuery
 

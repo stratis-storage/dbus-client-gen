@@ -1,11 +1,3 @@
-ifeq ($(origin MONKEYTYPE), undefined)
-  PYTHON = python3
-else
-  PYTHON = MONKEYTYPE_TRACE_MODULES=dbus_client_gen monkeytype run
-endif
-
-MONKEYTYPE_MODULES = dbus_client_gen._managed_objects
-
 .PHONY: lint
 lint:
 	pylint setup.py
@@ -52,13 +44,3 @@ yamllint:
 .PHONY: package
 package:
 	(umask 0022; python -m build; python -m twine check --strict ./dist/*)
-
-.PHONY: apply
-apply:
-	@echo "Modules traced:"
-	@monkeytype list-modules
-	@echo
-	@echo "Annotating:"
-	@for module in ${MONKEYTYPE_MODULES}; do \
-	  monkeytype --verbose apply  --sample-count --ignore-existing-annotations $${module} > /dev/null; \
-	done
