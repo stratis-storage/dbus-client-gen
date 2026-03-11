@@ -7,6 +7,7 @@ the data structure returned by the GetManagedObjects() method.
 """
 
 # isort: STDLIB
+import os
 import xml.etree.ElementTree as ET  # nosec B405
 from typing import Any, Callable, Generator, Mapping, Optional, Tuple
 
@@ -16,6 +17,11 @@ from ._errors import (
     DbusClientUniqueResultError,
     DbusClientUnknownSearchPropertiesError,
 )
+
+try:
+    _STRICT_LOOKUP = bool(int(os.environ.get("DBUS_CLIENT_GEN_STRICT_LOOKUP", "0")))
+except ValueError:
+    _STRICT_LOOKUP = False
 
 
 class GMOQuery:
@@ -49,6 +55,9 @@ class GMOQuery:
             try:
                 return all(sub_table[key] == value for (key, value) in props.items())
             except KeyError as err:
+                if _STRICT_LOOKUP is False:
+                    return False
+
                 fmt_str = (
                     "Missing properties in data for some object in "
                     'interface "%s": %s'

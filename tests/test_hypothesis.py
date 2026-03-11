@@ -3,6 +3,7 @@ Hypothesis-based tests of class generation code.
 """
 
 # isort: STDLIB
+import os
 import unittest
 from os import sys
 
@@ -132,5 +133,10 @@ class TestCase(unittest.TestCase):
                 self.assertEqual(list(query.search({"op": {}})), [])
 
             else:
-                with self.assertRaises(DbusClientMissingSearchPropertiesError):
-                    list(query.search({"op": {interface_name: {}}}))
+                if bool(int(os.environ.get("DBUS_CLIENT_GEN_STRICT_LOOKUP", "0"))):
+                    with self.assertRaises(DbusClientMissingSearchPropertiesError):
+                        list(query.search({"op": {interface_name: {}}}))
+                else:
+                    self.assertEqual(
+                        list(query.search({"op": {interface_name: {}}})), []
+                    )
