@@ -79,7 +79,7 @@ class GMOQuery:
 
     def search(
         self, gmo_result: Mapping[Any, Mapping[str, Mapping[str, Any]]]
-    ) -> Generator[Tuple[Any, Mapping[str, Mapping[str, Any]]]]:
+    ) -> Generator[Tuple[Any, Mapping[str, Mapping[str, Any]]], None, None]:
         """
         Search a GetManagedObjects() result, generating any matches.
 
