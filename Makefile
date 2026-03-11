@@ -10,7 +10,7 @@ lint:
 
 .PHONY: test
 test:
-	${PYTHON} -m unittest discover --verbose tests
+	python3 -m unittest discover --verbose tests
 
 .PHONY: coverage
 coverage:
