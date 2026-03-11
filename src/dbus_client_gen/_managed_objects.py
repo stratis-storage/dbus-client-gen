@@ -17,6 +17,8 @@ from ._errors import (
     DbusClientMissingPropertyError,
 )
 
+_UNSET = object()
+
 
 def managed_object_builder(spec: Element) -> Callable:
     """
@@ -58,7 +60,7 @@ def managed_object_builder(spec: Element) -> Callable:
         :rtype: object
         """
 
-        def dbus_func(self):
+        def dbus_func(self, *, default=_UNSET):
             """
             The property getter.
 
@@ -68,10 +70,12 @@ def managed_object_builder(spec: Element) -> Callable:
                 # pylint: disable=protected-access
                 return self._table[name]
             except KeyError as err:
-                fmt_str = 'No entry found for interface "%s" and property "%s"'
-                raise DbusClientMissingPropertyError(
-                    fmt_str % (interface_name, name), interface_name, name
-                ) from err
+                if default is _UNSET:
+                    fmt_str = 'No entry found for interface "%s" and property "%s"'
+                    raise DbusClientMissingPropertyError(
+                        fmt_str % (interface_name, name), interface_name, name
+                    ) from err
+                return default
 
         return dbus_func
 
