@@ -70,6 +70,9 @@ class TestCase(unittest.TestCase):
                 getattr(obj, name)()
 
         for name in property_names:
+            self.assertEqual(getattr(obj, name)(default="default"), "default")
+
+        for name in property_names:
             obj = klass({interface_name: {name: True}})
             self.assertTrue(getattr(obj, name)())
 
