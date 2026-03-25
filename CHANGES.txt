@@ -1,5 +1,5 @@
-into-dbus-python 0.5.1
-======================
+dbus-client-gen 0.5.1
+=====================
 Recommended development environment: Fedora 38
 
 - Make __version__ available at top level:
@@ -42,8 +42,8 @@ Recommended development environment: Fedora 38
   https://github.com/stratis-storage/into-dbus-python/pull/52
 
 
-into-dbus-python 0.5
-====================
+dbus-client-gen 0.5
+===================
 
 Recommended Python interpreter: 3.7.9
 Recommended tox version: 3.13.2
