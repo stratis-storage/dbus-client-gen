@@ -10,7 +10,7 @@ D-Bus introspection data strategy.
 
 # isort: STDLIB
 import string
-import xml.etree.ElementTree as ET  # nosec B405
+import xml.etree.ElementTree as ET
 from abc import ABC, abstractmethod
 
 # isort: THIRDPARTY

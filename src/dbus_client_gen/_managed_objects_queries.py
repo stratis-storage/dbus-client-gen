@@ -7,7 +7,7 @@ the data structure returned by the GetManagedObjects() method.
 """
 
 # isort: STDLIB
-import xml.etree.ElementTree as ET  # nosec B405
+import xml.etree.ElementTree as ET
 from typing import Any, Callable, Generator, Mapping, Optional, Tuple
 
 from ._errors import (
