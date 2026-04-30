@@ -6,11 +6,9 @@
 Deterministic testing of method generation and execution.
 """
 
-# isort: STDLIB
 import unittest
 import xml.etree.ElementTree as ET
 
-# isort: LOCAL
 from dbus_client_gen import GMOQuery, managed_object_class, mo_query_builder
 from dbus_client_gen._errors import (
     DbusClientGenerationError,
