@@ -6,7 +6,6 @@ Code for generating classes suitable for wrapping a table for an object
 returned by GetManagedObjects().
 """
 
-# isort: STDLIB
 import types
 from typing import Callable
 from xml.etree.ElementTree import Element
@@ -65,7 +64,6 @@ def managed_object_builder(spec: Element) -> Callable:
             :raises: DbusClientMissingPropertyError
             """
             try:
-                # pylint: disable=protected-access
                 return self._table[name]
             except KeyError as err:
                 fmt_str = 'No entry found for interface "%s" and property "%s"'
@@ -106,7 +104,7 @@ def managed_object_builder(spec: Element) -> Callable:
                 raise DbusClientMissingInterfaceError(
                     fmt_str % interface_name, interface_name
                 )
-            # pylint: disable=protected-access
+
             self._table = table[interface_name]
 
         namespace["__init__"] = __init__

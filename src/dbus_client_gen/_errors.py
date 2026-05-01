@@ -107,9 +107,6 @@ class DbusClientMissingInterfaceError(DbusClientRuntimeError):
         :param str message: the error message
         :param str interface_name: the interface name
         """
-        # Note that if this is not disabled, pylint complains about
-        # super-init-not-called instead.
-        # pylint: disable=useless-super-delegation
         super().__init__(message, interface_name)
 
 
@@ -126,9 +123,6 @@ class DbusClientSearchConditionError(DbusClientRuntimeError):
         :param str message: the error message
         :param str interface_name: the interface name
         """
-        # Note that if this is not disabled, pylint complains about
-        # super-init-not-called instead.
-        # pylint: disable=useless-super-delegation
         super().__init__(message, interface_name)
 
 

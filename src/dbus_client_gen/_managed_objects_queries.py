@@ -6,7 +6,6 @@ Code for generating methods suitable for identifying objects in
 the data structure returned by the GetManagedObjects() method.
 """
 
-# isort: STDLIB
 import xml.etree.ElementTree as ET
 from typing import Any, Callable, Generator, Mapping, Optional, Tuple
 
@@ -50,8 +49,7 @@ class GMOQuery:
                 return all(sub_table[key] == value for (key, value) in props.items())
             except KeyError as err:
                 fmt_str = (
-                    "Missing properties in data for some object in "
-                    'interface "%s": %s'
+                    'Missing properties in data for some object in interface "%s": %s'
                 )
                 missing = ", ".join(
                     str(x)

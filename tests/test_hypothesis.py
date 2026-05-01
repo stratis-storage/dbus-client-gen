@@ -2,15 +2,12 @@
 Hypothesis-based tests of class generation code.
 """
 
-# isort: STDLIB
 import unittest
 from os import sys
 
-# isort: THIRDPARTY
 from hypothesis import HealthCheck, given, settings
 from hypothesis.strategies import tuples
 
-# isort: LOCAL
 from dbus_client_gen import managed_object_class, mo_query_builder
 from dbus_client_gen._errors import (
     DbusClientMissingInterfaceError,
@@ -19,9 +16,7 @@ from dbus_client_gen._errors import (
     DbusClientUniqueResultError,
     DbusClientUnknownSearchPropertiesError,
 )
-
-# isort considers this third party, but it is not
-from tests._introspect import interface_strategy  # isort:skip
+from tests._introspect import interface_strategy
 
 settings.register_profile("tracing", deadline=None)
 if sys.gettrace() is not None:
@@ -34,8 +29,6 @@ class TestCase(unittest.TestCase):
     """
 
     @given(
-        # pylint: disable=no-member
-        # pylint: disable=no-value-for-parameter
         interface_strategy(
             max_children=3,
             max_methods=1,
@@ -74,8 +67,6 @@ class TestCase(unittest.TestCase):
             self.assertTrue(getattr(obj, name)())
 
     @given(
-        # pylint: disable=no-member
-        # pylint: disable=no-value-for-parameter
         tuples(
             interface_strategy(
                 max_children=3,

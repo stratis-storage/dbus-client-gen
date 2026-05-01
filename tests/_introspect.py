@@ -2,18 +2,15 @@
 D-Bus introspection data strategy.
 """
 
-# pylint: disable=fixme
 # TODO: When this strategy is fully mature, port it to a separate library.
 # It is correct according to the dtd, except that attributes intended to be
 # D-Bus signatures supply only a valid D-Bus signature, rather than arbitrary
 # CDATA.
 
-# isort: STDLIB
 import string
 import xml.etree.ElementTree as ET
 from abc import ABC, abstractmethod
 
-# isort: THIRDPARTY
 from hypothesis.strategies import (
     builds,
     composite,
@@ -24,7 +21,6 @@ from hypothesis.strategies import (
     text,
 )
 
-# isort: FIRSTPARTY
 from hs_dbus_signature import dbus_signatures
 
 _TEXT_SET = string.ascii_letters + string.digits + string.punctuation
@@ -173,7 +169,7 @@ def arg_strategy(*, min_children=0, max_children=None, dbus_signature_args=None)
 
 
 @composite
-def interface_strategy(  # pylint: disable=too-many-locals, too-many-arguments
+def interface_strategy(  # noqa: PLR0913
     draw,
     *,
     min_children=0,
@@ -221,7 +217,7 @@ def interface_strategy(  # pylint: disable=too-many-locals, too-many-arguments
     )
     methods = draw(
         frozensets(
-            method_strategy(  # pylint: disable=no-value-for-parameter
+            method_strategy(
                 min_children=min_children,
                 max_children=max_children,
                 min_annotations=min_children,
@@ -247,7 +243,7 @@ def interface_strategy(  # pylint: disable=too-many-locals, too-many-arguments
     )
     signals = draw(
         frozensets(
-            signal_strategy(  # pylint: disable=no-value-for-parameter
+            signal_strategy(
                 min_children=min_children,
                 max_children=max_children,
                 min_annotations=min_children,
@@ -266,7 +262,7 @@ def interface_strategy(  # pylint: disable=too-many-locals, too-many-arguments
 
 
 @composite
-def method_strategy(  # pylint: disable=too-many-arguments
+def method_strategy(  # noqa: PLR0913
     draw,
     *,
     min_children=0,
@@ -370,7 +366,7 @@ def signal_arg_strategy(*, min_children=0, max_children=None, dbus_signature_arg
 
 
 @composite
-def signal_strategy(  # pylint: disable=too-many-arguments
+def signal_strategy(  # noqa: PLR0913
     draw,
     *,
     min_children=0,

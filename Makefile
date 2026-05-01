@@ -1,8 +1,6 @@
 .PHONY: lint
 lint:
-	pylint setup.py
-	pylint src/dbus_client_gen --disable=duplicate-code
-	pylint tests
+	ruff check
 	pyright
 
 .PHONY: test
@@ -17,13 +15,13 @@ coverage:
 
 .PHONY: fmt
 fmt:
-	isort setup.py src tests
-	black .
+	ruff check --fix --select I
+	ruff format
 
 .PHONY: fmt-travis
 fmt-travis:
-	isort --diff --check-only setup.py src tests
-	black . --check
+	ruff check --select I
+	ruff format --check
 
 PYREVERSE_OPTS = --output=pdf
 .PHONY: view
