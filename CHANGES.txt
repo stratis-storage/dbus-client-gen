@@ -1,6 +1,6 @@
 dbus-client-gen 0.5.2
 ======================
-Recommended development environment: Fedora 42
+Recommended development environment: Fedora 43
 
 - Remove license classifier deprecated by PEP 639:
   https://github.com/stratis-storage/into-dbus-python/pull/110
