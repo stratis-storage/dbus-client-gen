@@ -8,7 +8,15 @@ Recommended development environment: Fedora 42
 - Require Python 3.12:
   https://github.com/stratis-storage/into-dbus-python/pull/114
 
+- Use project name in changelog file:
+  https://github.com/stratis-storage/into-dbus-python/pull/122
+
 - Tidies and Maintenance:
+  https://github.com/stratis-storage/into-dbus-python/pull/125
+  https://github.com/stratis-storage/into-dbus-python/pull/124
+  https://github.com/stratis-storage/into-dbus-python/pull/123
+  https://github.com/stratis-storage/into-dbus-python/pull/121
+  https://github.com/stratis-storage/into-dbus-python/pull/119
   https://github.com/stratis-storage/into-dbus-python/pull/118
   https://github.com/stratis-storage/into-dbus-python/pull/117
   https://github.com/stratis-storage/into-dbus-python/pull/116
