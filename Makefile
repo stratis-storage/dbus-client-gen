@@ -35,6 +35,7 @@ view:
 .PHONY: yamllint
 yamllint:
 	yamllint --strict .github/workflows/main.yml
+	yamllint --strict .yamllint.yaml
 
 .PHONY: package
 package:
