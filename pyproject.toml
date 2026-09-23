@@ -1,6 +1,52 @@
 [build-system]
-requires = ["setuptools"]
+requires = [
+    "setuptools>=77",
+]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "dbus-client-gen"
+authors = [
+    { name = "Anne Mulhern", email = "amulhern@redhat.com" },
+]
+description = "generates classes and methods useful to a D-Bus client"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.12"
+license = "MPL-2.0"
+dynamic = [
+    "version",
+]
+
+[project.readme]
+file = "README.rst"
+content-type = "text/x-rst"
+
+[project.urls]
+Homepage = "https://github.com/stratis-storage/dbus-client-gen"
+
+[tool.setuptools]
+packages = [
+    "dbus_client_gen",
+]
+platforms = [
+    "Linux",
+]
+include-package-data = false
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.dynamic.version]
+attr = "dbus_client_gen._version.__version__"
 
 [tool.ruff]
 target-version = "py312"
