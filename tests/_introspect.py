@@ -55,7 +55,7 @@ class XMLElement(ABC):
 
     @classmethod
     @abstractmethod
-    def name(cls):
+    def name(cls) -> str:
         """
         Method which returns the tag for this class.
         """
