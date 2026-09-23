@@ -2,8 +2,8 @@
 Hypothesis-based tests of class generation code.
 """
 
+import sys
 import unittest
-from os import sys
 
 from hypothesis import HealthCheck, given, settings
 from hypothesis.strategies import tuples
