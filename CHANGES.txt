@@ -1,3 +1,11 @@
+dbus-client-gen 0.5.3
+======================
+Recommended development environment: Fedora 44
+
+- Remove .pyproject.toml file:
+  https://github.com/stratis-storage/into-dbus-python/pull/133
+
+
 dbus-client-gen 0.5.2
 ======================
 Recommended development environment: Fedora 44
